@@ -1,0 +1,33 @@
+;; it is just idea of package description for pandora package manager
+;; syntax could be changed later, this is not final variant
+
+(def pack {
+  :name "sl"
+  :version 5.05
+  :desc "Steam Locomotive runs across your terminal when 
+          you type \"sl\" as you meant to type \"ls\""
+  :arch x86_64
+  :license "custom"
+  :maintainer ["Felix Yan" "Brett Cornwall"]
+  :deps [ncurses]})
+
+(def prep
+  hsh"
+    cd "sl-{pack.version}"
+    patch < "../systemd_ldflags.patch"
+    ")
+
+(def build
+  hsh"
+    cd "sl-{pack.name}"
+    make
+    gzip -9 -f "sl.1"
+    ")
+
+(def package
+  hsh"
+    cd "sl-{pack.name}"
+    install -Dm 775 "sl" "$pkgdir/usr/bin/sl"
+    install -Dm 644 "sl.1.gz" "$pkgdir/usr/share/man/man1/sl.1.gz"
+    install -Dm 644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+    ")

@@ -33,6 +33,7 @@ bool is_allowed_special_character(char c) {
 		case '-':
 		case '+':
 		case '/':
+		case '_':
 			return true;
 		default:
 			return false;

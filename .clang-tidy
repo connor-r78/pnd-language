@@ -1,0 +1,14 @@
+Language: C
+Checks: '
+  clang-analyzer-*,
+  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
+  readability-*,
+  modernize-use-trailing-return-type,
+  performance-*,
+  portability-*,
+  bugprone-*,
+  -modernize-use-nullptr
+'
+WarningsAsErrors: '*'
+HeaderFilterRegex: '.*'
+FormatStyle: file

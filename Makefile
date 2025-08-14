@@ -1,20 +1,23 @@
 CC = gcc
-CFLAGS = -Wall -Wextra  -O0 -g
+CFLAGS = -O0 -g3 -Isrc -Wall -Wextra -Wpedantic -Wconversion -Wdouble-promotion -Wno-unused-parameter -Wno-unused-function -Wno-sign-conversion -fsanitize=undefined -fsanitize-trap
 
 BUILD_DIR = build
-SRC = $(wildcard src/*.c)
-OBJ = $(patsubst src/%.c,$(BUILD_DIR)/%.o,$(SRC))
+SRC_DIR = src
 
-TARGET = pnd
+SRC = $(shell find $(SRC_DIR) -name '*.c')
+OBJ = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRC))
+
+TARGET = build/pnd
 
 .PHONY: all clean format
 
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-	$(CC) $(CFLAGS) -o $(TARGET) $^
+	$(CC) $(CFLAGS) -o $@ $^
 
-$(BUILD_DIR)/%.o: src/%.c | $(BUILD_DIR)
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIR):
@@ -25,4 +28,4 @@ clean:
 	rm -f $(TARGET)
 
 format:
-	clang-format -i -style=file src/*
+	find $(SRC_DIR) -name '*.c' -exec clang-format -i -style=file {} +

@@ -1,5 +1,5 @@
-#ifndef LEX_H
-#define LEX_H
+#ifndef PND_LEXER_H_
+#define PND_LEXER_H_
 
 #define MAX_NUM_SIZE 256
 #define MAX_STR_SIZE 1024
@@ -27,4 +27,4 @@ Token* next_token();
 void print_token(Token* tok);
 void free_token(Token* tok);
 
-#endif
+#endif // PND_LEXER_H

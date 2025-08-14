@@ -1,0 +1,11 @@
+BasedOnStyle: Mozilla
+AlignConsecutiveAssignments: 
+  AcrossEmptyLines: false
+  AlignCompound: true
+  PadOperators: true
+AlignConsecutiveMacros: Consecutive
+BraceWrapping:
+  AfterEnum: true
+  AfterStruct: true
+  AfterFunction: true
+  AfterUnion: true

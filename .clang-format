@@ -9,3 +9,4 @@ BraceWrapping:
   AfterStruct: true
   AfterFunction: true
   AfterUnion: true
+AlwaysBreakAfterReturnType: None

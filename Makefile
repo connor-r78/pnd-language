@@ -5,9 +5,9 @@ BUILD_DIR = build
 SRC = $(wildcard src/*.c)
 OBJ = $(patsubst src/%.c,$(BUILD_DIR)/%.o,$(SRC))
 
-TARGET = slang
+TARGET = pnd
 
-.PHONY: all clean
+.PHONY: all clean format
 
 all: $(TARGET)
 
@@ -23,3 +23,6 @@ $(BUILD_DIR):
 clean:
 	rm -rf $(BUILD_DIR)
 	rm -f $(TARGET)
+
+format:
+	clang-format -i -style=file src/*

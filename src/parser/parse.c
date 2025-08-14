@@ -25,13 +25,17 @@ void print_sexp(SExp* sexp) {
     case SEXP_LIST:
       printf("(");
       SExpList* list = sexp->as.list;
+
       while (list != NULL) {
         print_sexp(list->value);
+
         if (list->next != NULL) {
           printf(" ");
         }
+
         list = list->next;
       }
+
       printf(")");
       break;
   }
@@ -39,41 +43,48 @@ void print_sexp(SExp* sexp) {
 
 SExp* parse_list() {
   SExp* ret = malloc(sizeof(SExp));
+
   ret->type = SEXP_LIST;
   ret->as.list = NULL;
 
   SExpList* head = NULL;
   SExpList* tail = NULL;
 
+  Token* token = next_token();
   size_t len = 0;
 
-  Token* token = next_token();
   while (token->type != TOKEN_RPAREN && token->type != TOKEN_EOF) {
     SExp* elem = parse_sexp(token);
+
     if (elem) {
       if (head == NULL) {
         head = malloc(sizeof(SExpList));
+
         head->value = elem;
         head->next = NULL;
         tail = head;
       } else {
         tail->next = malloc(sizeof(SExpList));
+
         tail = tail->next;
         tail->value = elem;
         tail->next = NULL;
       }
     }
+
     len++;
     token = next_token();
   }
 
   ret->as.list = head;
   ret->length = len;
+
   return ret;
 }
 
 SExp* parse_sexp(Token* token) {
   SExp* ret = malloc(sizeof(SExp));
+
   if (!ret) {
     return NULL;
   }
@@ -85,14 +96,17 @@ SExp* parse_sexp(Token* token) {
     case TOKEN_SYMBOL:
       ret->type = SEXP_SYMBOL;
       ret->as.symbol = strdup(token->value);
+
       return ret;
     case TOKEN_NUMBER:
       ret->type = SEXP_NUMBER;
       ret->as.number = atof(token->value);
+
       return ret;
     case TOKEN_STRING:
       ret->type = SEXP_STRING;
       ret->as.string = strdup(token->value);
+
       return ret;
     case TOKEN_RPAREN:
       free(ret);

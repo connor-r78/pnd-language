@@ -1,10 +1,13 @@
+Language: C
 Checks: '
-  -*,
   clang-analyzer-*,
+  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
   readability-*,
-  modernize-*,
+  modernize-use-trailing-return-type,
   performance-*,
-  portability-*
+  portability-*,
+  bugprone-*,
+  -modernize-use-nullptr
 '
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'

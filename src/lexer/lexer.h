@@ -32,8 +32,9 @@ typedef struct {
   const char* input;
   size_t input_length;
 
-  int current_line;
-  int current_column;
+  size_t current_line;
+  size_t current_column;
+  size_t position;
 
   token_t* current;
   token_t* previous;

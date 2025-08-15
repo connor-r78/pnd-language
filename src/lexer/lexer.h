@@ -48,7 +48,7 @@ token_t* token_streamer_current(token_streamer* streamer);
 token_t* token_streamer_previous(token_streamer* streamer);
 // Tokenize Next Token
 token_t* token_streamer_next(token_streamer* streamer);
-// Free Streamer from memory
+// Free Streamer from memory (frees only content inside)
 void token_streamer_free(token_streamer* streamer);
 
 // ------------------------------------------------

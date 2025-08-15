@@ -58,7 +58,6 @@ int main(int argc, char** argv) {
   } else {
     token_streamer streamer = token_streamer_init(input);
 
-    // memory leak
     token_t* token = token_streamer_next(&streamer);
 
     while ((token->type != TOKEN_EOF)) {

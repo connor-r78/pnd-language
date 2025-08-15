@@ -6,27 +6,71 @@
 #include <stdlib.h>
 #include <string.h>
 
-static const char* kCurrentInputPtr;
-static const char* kInputStartPtr;
-
-static int current_line;
-static int current_column;
-
-int len;
-
 // Tokens stringified variants
 const char* kTokenNames[] = {"TOKEN_LPAREN", "TOKEN_RPAREN", "TOKEN_SYMBOL",
                              "TOKEN_NUMBER", "TOKEN_STRING", "TOKEN_ERROR",
                              "TOKEN_EOF"};
 
-void init_lexer(const char* input, int length) {
-  kCurrentInputPtr = input;
-  kInputStartPtr = input;
+// prototypes
+void tokenize_next(token_streamer* streamer);
 
-  current_line = 1;
-  current_column = 1;
+// implementations
 
-  len = length;
+token_streamer token_streamer_init(const char* input) {
+  token_streamer streamer;
+
+  streamer.input = input;
+  streamer.input_length = strlen(input);
+
+  streamer.current_line = 0;
+  streamer.current_column = 0;
+
+  streamer.current = NULL;
+  streamer.previous = NULL;
+
+  return streamer;
+}
+
+token_t* token_streamer_current(token_streamer* streamer) {
+  if (streamer && streamer->current) {
+    return streamer->current;
+  }
+  return NULL;
+}
+
+token_t* token_streamer_previous(token_streamer* streamer) {
+  if (streamer && streamer->previous) {
+    return streamer->previous;
+  }
+  return NULL;
+}
+
+token_t* token_streamer_next(token_streamer* streamer) {
+  if (!streamer)
+    return NULL;
+
+  // moving current to previous
+
+  token_t* previous = streamer->current;
+
+  if (streamer->previous)
+    token_free(streamer->previous);
+
+  streamer->previous = previous;
+
+  // tokenizing new
+
+  tokenize_next(streamer);
+  return token_streamer_current(streamer);
+}
+
+void token_streamer_free(token_streamer* streamer) {
+  if (streamer) {
+    if (streamer->current)
+      token_free(streamer->current);
+    if (streamer->previous)
+      token_free(streamer->previous);
+  }
 }
 
 bool is_allowed_special_character(char c) {
@@ -42,8 +86,8 @@ bool is_allowed_special_character(char c) {
   };
 }
 
-Token* tokengen(TokenType type, char* val) {
-  Token* ret = malloc(sizeof(Token));
+token_t* tokengen(token_type_t type, char* val) {
+  token_t* ret = malloc(sizeof(token_t));
 
   ret->type = type;
 
@@ -55,13 +99,16 @@ Token* tokengen(TokenType type, char* val) {
   return ret;
 }
 
-Token* next_token() {
+void tokenize_next(token_streamer* streamer) {
+  const char* kInputStartPtr = streamer->input;
+  const char* kCurrentInputPtr = streamer->input;
+
   while (*kCurrentInputPtr != '\0' && isspace(*kCurrentInputPtr)) {
     if (*kCurrentInputPtr == '\n') {
-      current_line++;
-      current_column = 1;
+      streamer->current_line++;
+      streamer->current_column = 1;
     } else {
-      current_column++;
+      streamer->current_column++;
     }
 
     kCurrentInputPtr++;
@@ -70,19 +117,22 @@ Token* next_token() {
   char current = *kCurrentInputPtr;
 
   if (current == '\0') {
-    return tokengen(TOKEN_EOF, "");
+    streamer->current = tokengen(TOKEN_EOF, "");
+    return;
   }
 
   if (current == '(') {
-    current_column++;
+    streamer->current_column++;
+    streamer->current = tokengen(TOKEN_LPAREN, "(");
     kCurrentInputPtr++;
-    return tokengen(TOKEN_LPAREN, "(");
+    return;
   }
 
   if (current == ')') {
-    current_column++;
+    streamer->current_column++;
+    streamer->current = tokengen(TOKEN_RPAREN, ")");
     kCurrentInputPtr++;
-    return tokengen(TOKEN_RPAREN, ")");
+    return;
   }
 
   if (isdigit(current)) {
@@ -90,48 +140,53 @@ Token* next_token() {
     int i = 0;
 
     while (isdigit(*kCurrentInputPtr) && i < MAX_NUM_SIZE - 1 &&
-           (kCurrentInputPtr - kInputStartPtr < len)) {
+           (kCurrentInputPtr - kInputStartPtr < streamer->input_length)) {
       buffer[i++] = *kCurrentInputPtr++;
-      current_column++;
+      streamer->current_column++;
     }
 
     if (i >= MAX_NUM_SIZE - 1) {
-      return tokengen(TOKEN_ERROR, "Number too long");
+      streamer->current = tokengen(TOKEN_ERROR, "Number too long");
+      return;
     }
 
     buffer[i] = '\0';
-    return tokengen(TOKEN_NUMBER, buffer);
+    streamer->current = tokengen(TOKEN_NUMBER, buffer);
+    return;
   }
 
   if (current == '"') {
     kCurrentInputPtr++;
-    current_column++;
+    streamer->current_column++;
 
     char buffer[MAX_STR_SIZE];
     int i = 0;
 
     while (*kCurrentInputPtr != '"' && i < MAX_STR_SIZE - 1 &&
-           (kCurrentInputPtr - kInputStartPtr < len)) {
+           (kCurrentInputPtr - kInputStartPtr < streamer->input_length)) {
       buffer[i++] = *kCurrentInputPtr++;
-      current_column++;
+      streamer->current_column++;
     }
 
     if (i >= MAX_STR_SIZE - 1) {
-      return tokengen(TOKEN_ERROR, "String too long");
+      streamer->current = tokengen(TOKEN_ERROR, "String too long");
+      return;
     }
 
     if (*kCurrentInputPtr == '\0') {
-      return tokengen(TOKEN_ERROR, "Unterminated string");
+      streamer->current = tokengen(TOKEN_ERROR, "Unterminated string");
+      return;
     }
 
     buffer[i] = '\0';
 
     if (*kCurrentInputPtr == '"') {
       kCurrentInputPtr++;
-      current_column++;
+      streamer->current_column++;
     }
 
-    return tokengen(TOKEN_STRING, buffer);
+    streamer->current = tokengen(TOKEN_STRING, buffer);
+    return;
   }
 
   char buffer[MAX_SYM_SIZE];
@@ -139,13 +194,15 @@ Token* next_token() {
 
   while ((isalnum(*kCurrentInputPtr) ||
           is_allowed_special_character(*kCurrentInputPtr)) &&
-         i < MAX_SYM_SIZE - 1 && (kCurrentInputPtr - kInputStartPtr < len)) {
+         i < MAX_SYM_SIZE - 1 &&
+         (kCurrentInputPtr - kInputStartPtr < streamer->input_length)) {
     buffer[i++] = *kCurrentInputPtr++;
-    current_column++;
+    streamer->current_column++;
   }
 
   if (i >= MAX_SYM_SIZE - 1) {
-    return tokengen(TOKEN_ERROR, "Symbol too long");
+    streamer->current = tokengen(TOKEN_ERROR, "Symbol too long");
+    return;
   }
 
   buffer[i] = '\0';
@@ -157,20 +214,19 @@ Token* next_token() {
              *kCurrentInputPtr);
 
     kCurrentInputPtr++;  // Advance past the problematic character
-    current_column++;
+    streamer->current_column++;
 
-    return tokengen(TOKEN_ERROR, error_msg);
+    tokengen(TOKEN_ERROR, error_msg);
   }
 
-  return tokengen(TOKEN_SYMBOL, buffer);
+  tokengen(TOKEN_SYMBOL, buffer);
 }
 
-void print_token(Token* tok) {
-  printf("TokenType: %s, value %s", kTokenNames[tok->type], tok->value);
+void token_print(token_t* token) {
+  printf("TokenType: %s, value %s", kTokenNames[token->type], token->value);
 }
 
-void free_token(Token* tok) {
-  if (tok) {
-    free(tok);
-  }
+void token_free(token_t* token) {
+  if (token)
+    free(token);
 }

@@ -1,8 +1,6 @@
 #ifndef PND_PARSER_H_
 #define PND_PARSER_H_
 
-#include <stdlib.h>
-
 #include "../lexer/lexer.h"
 
 typedef struct SExp SExp;
@@ -33,10 +31,10 @@ struct SExp {
   size_t length;
 };
 
-SExp* parse_sexp(Token* token);
+SExp* parse_sexp(token_streamer* streamer, token_t* token);
 
 void print_sexp(SExp* sexp);
 void parse_and_print(char* input);
 void to_shell(SExp* input);
 
-#endif // PND_PARSER_H_
+#endif  // PND_PARSER_H_

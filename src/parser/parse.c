@@ -41,7 +41,7 @@ void print_sexp(SExp* sexp) {
   }
 }
 
-SExp* parse_list() {
+SExp* parse_list(token_streamer* streamer) {
   SExp* ret = malloc(sizeof(SExp));
 
   ret->type = SEXP_LIST;
@@ -50,11 +50,11 @@ SExp* parse_list() {
   SExpList* head = NULL;
   SExpList* tail = NULL;
 
-  Token* token = next_token();
+  token_t* token = token_streamer_next(streamer);
   size_t len = 0;
 
   while (token->type != TOKEN_RPAREN && token->type != TOKEN_EOF) {
-    SExp* elem = parse_sexp(token);
+    SExp* elem = parse_sexp(streamer, token);
 
     if (elem) {
       if (head == NULL) {
@@ -73,7 +73,7 @@ SExp* parse_list() {
     }
 
     len++;
-    token = next_token();
+    token = token_streamer_next(streamer);
   }
 
   ret->as.list = head;
@@ -82,7 +82,7 @@ SExp* parse_list() {
   return ret;
 }
 
-SExp* parse_sexp(Token* token) {
+SExp* parse_sexp(token_streamer* streamer, token_t* token) {
   SExp* ret = malloc(sizeof(SExp));
 
   if (!ret) {
@@ -92,7 +92,7 @@ SExp* parse_sexp(Token* token) {
   switch (token->type) {
     case TOKEN_LPAREN:
       free(ret);
-      return parse_list();
+      return parse_list(streamer);
     case TOKEN_SYMBOL:
       ret->type = SEXP_SYMBOL;
       ret->as.symbol = strdup(token->value);

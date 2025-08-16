@@ -16,13 +16,15 @@ void remove_outer_quotes(char* str) {
   }
 }
 void parse_and_print(char* input) {
-  init_lexer(input, (int)strlen(input));
+  token_streamer streamer = token_streamer_init(input);
 
-  Token* token = next_token();
-  SExp* sexp = parse_sexp(token);
+  token_t* token = token_streamer_next(&streamer);
+  SExp* sexp = parse_sexp(&streamer, token);
 
   print_sexp(sexp);
   printf("\n");
+
+  token_streamer_free(&streamer);
 }
 
 int main(int argc, char** argv) {
@@ -54,17 +56,17 @@ int main(int argc, char** argv) {
   if (parse) {
     parse_and_print(input);
   } else {
-    init_lexer(input, (int)strlen(input));
+    token_streamer streamer = token_streamer_init(input);
 
-    // memory leak
-    Token* token = next_token();
+    token_t* token = token_streamer_next(&streamer);
 
     while ((token->type != TOKEN_EOF)) {
-      print_token(token);
+      token_print(token);
       printf("\n");
-      free_token(token);
-      token = next_token();
+      token = token_streamer_next(&streamer);
     }
+
+    token_streamer_free(&streamer);
   }
 
   return 0;

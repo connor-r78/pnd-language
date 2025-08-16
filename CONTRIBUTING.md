@@ -35,6 +35,7 @@ You can always open new issue in this repository with [Issues] tab!
 > - Verify your code with project requirements
 > - Provide necessary examples or any other extra information of changes
 > - Provide detailed description of your work in pull request
+> - Format your code with command: `make format`
 
 ## Project Code Style
 1. **Namings** must be clear and understandable. <br/>

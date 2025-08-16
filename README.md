@@ -14,7 +14,6 @@ The main idea is provide user-friendly package manager and package language in [
 - **Main Language:** `C`
 - **Build System:** `Make`
 - **C Compiler:** `gcc` (you can use any supported for yourself)
-- **Code Style:** `Google` ([C++ Style Guide](https://google.github.io/styleguide/cppguide.html))
 
 ## 🛠️ Building Guide
 1. Install C compiler (Makefile uses [gcc](https://gcc.gnu.org/))

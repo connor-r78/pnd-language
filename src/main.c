@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "interpreter/interpreter.h"
 #include "lexer/lexer.h"
 #include "parser/parse.h"
 #include "interpreter/interpreter.h"

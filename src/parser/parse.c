@@ -59,16 +59,15 @@ SExp* parse_list(token_streamer* streamer) {
     if (elem) {
       if (head == NULL) {
         head = malloc(sizeof(SExpList));
-
         head->value = elem;
         head->next = NULL;
         tail = head;
       } else {
-        tail->next = malloc(sizeof(SExpList));
-
-        tail = tail->next;
-        tail->value = elem;
-        tail->next = NULL;
+        SExpList* new_node = malloc(sizeof(SExpList));
+        new_node->value = elem;
+        new_node->next = NULL;
+        tail->next = new_node;
+        tail = new_node;
       }
     }
 

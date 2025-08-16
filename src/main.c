@@ -7,7 +7,6 @@
 #include "interpreter/interpreter.h"
 #include "lexer/lexer.h"
 #include "parser/parse.h"
-#include "interpreter/interpreter.h"
 
 void remove_outer_quotes(char* str) {
   size_t len = strlen(str);
@@ -45,18 +44,18 @@ int main(int argc, char** argv) {
   remove_outer_quotes(input);
 
   if (parse) {
-  token_streamer streamer = token_streamer_init(input);
+    token_streamer streamer = token_streamer_init(input);
 
-  token_t* token = token_streamer_next(&streamer);
-  SExp* sexp = parse_sexp(&streamer, token);
+    token_t* token = token_streamer_next(&streamer);
+    SExp* sexp = parse_sexp(&streamer, token);
 
-  print_sexp(sexp);
-  printf("\n");
- 
-	print_sexp(eval_sexp(sexp));
-  printf("\n");
+    print_sexp(sexp);
+    printf("\n");
 
-  token_streamer_free(&streamer);
+    print_sexp(eval_sexp(sexp));
+    printf("\n");
+
+    token_streamer_free(&streamer);
   } else {
     token_streamer streamer = token_streamer_init(input);
 

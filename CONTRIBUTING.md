@@ -39,7 +39,7 @@ You can always open new issue in this repository with [Issues] tab!
 
 ## Project Code Style
 1. **Namings** must be clear and understandable. <br/>
-_Variables/Functions_ use `camelCase`, and for public versions prepend the header it is defined in, followed by an underscore. (for types (excluding structures) `_t` at the end: `token_t`). <br/>
+_Variables/Functions_ use `snake_case`, and for public versions prepend the header it is defined in (for types (excluding structures) `_t` at the end: `token_t`). <br/>
 _Structs/Unions/Enums_ use `PascalCase`
 _Defined Constants_ (`#define`) should have `SCREAMING_SNAKE_CASE`. <br/>
 _Other Constants_ postpend `_k` to the name. <br\>

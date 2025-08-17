@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../lexer/lexer.h"
-
 void print_sexp(SExp* sexp) {
   if (sexp == NULL) {
     printf("NULL");
@@ -95,17 +93,17 @@ SExp* parse_sexp(token_streamer* streamer, token_t* token) {
       return parse_list(streamer);
     case TOKEN_SYMBOL:
       ret->type = SEXP_SYMBOL;
-      ret->as.symbol = strdup(token->value);
+      ret->as.symbol = strdup(string_get(&token->value));
 
       return ret;
     case TOKEN_NUMBER:
       ret->type = SEXP_NUMBER;
-      ret->as.number = atof(token->value);
+      ret->as.number = atof(string_get(&token->value));
 
       return ret;
     case TOKEN_STRING:
       ret->type = SEXP_STRING;
-      ret->as.string = strdup(token->value);
+      ret->as.string = strdup(string_get(&token->value));
 
       return ret;
     case TOKEN_RPAREN:

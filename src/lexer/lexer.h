@@ -7,6 +7,8 @@
 
 #include <stddef.h>
 
+#include "../utils/dynamic_string.h"
+
 // Token.
 // Abstract structure which contains type, value, and metadata of lexeme.
 typedef enum {
@@ -21,8 +23,7 @@ typedef enum {
 
 typedef struct {
   token_type_t type;
-  char value[MAX_SYM_SIZE];
-  int length;
+  string_t value;
 } token_t;
 
 // Token Streamer.

@@ -100,11 +100,7 @@ token_t* tokengen(token_type_t type, const char* value) {
     return NULL;
 
   ret->type = type;
-
-  strncpy(ret->value, value, MAX_SYM_SIZE - 1);
-
-  ret->value[MAX_SYM_SIZE - 1] = '\0';
-  ret->length = (int)strlen(ret->value);
+  ret->value = string_from(value);
 
   return ret;
 }
@@ -239,10 +235,13 @@ void tokenize_next(token_streamer* streamer) {
 }
 
 void token_print(token_t* token) {
-  printf("TokenType: %s, value %s", kTokenNames[token->type], token->value);
+  printf("TokenType: %s, value %s", kTokenNames[token->type],
+         string_get(&token->value));
 }
 
 void token_free(token_t* token) {
-  if (token)
+  if (token) {
+    string_free(&token->value);
     free(token);
+  }
 }

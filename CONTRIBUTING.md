@@ -39,12 +39,13 @@ You can always open new issue in this repository with [Issues] tab!
 
 ## Project Code Style
 1. **Namings** must be clear and understandable. <br/>
-_Variables/Functions_ use `camelCase`, and for public versions prepend the header it is defined in, followed by an underscore. (for types `_t` at the end: `token_t`). <br/>
+_Variables/Functions_ use `snake_case`, and for public versions prepend the header it is defined in (for types (excluding structures) `_t` at the end: `token_t`). <br/>
 _Structs/Unions/Enums_ use `PascalCase`
-_All Constants_ should use `#define` and must have `SCREAMING_SNAKE_CASE`. <br/>
+_Defined Constants_ (`#define`) should have `SCREAMING_SNAKE_CASE`. <br/>
+_Other Constants_ postpend `_k` to the name. <br\>
 3. **Includes** are located at the start, _standard library headers_ must be separated from _user header files_.
 4. **Repeating** code suggested to be in separated function.
 5. **No Magic Numbers**. If you need to use that number, declare a constant with it.
-6. **Comments** shouldn't be necessary. If you have to comment, you are doing something wrong! Re-name or re-structure your code instead to make it easier to read. <br/>
+6. **Comments** should be minimal and helpful. Please do not leave a comment saying \"_foo_ gets set to _7_\" <br/>
 Always leave necessary documentation for provided API and changes.\
-7. **The code blocks** should not be "glued together", they should be separated according to their logical meaning.
+7. **The code blocks** should not be "glued together", they should be separated according to their logical meaning. AKA put line breaks after loops, group variables, etc.

@@ -239,7 +239,7 @@ void tokenize_next(token_streamer* streamer) {
 }
 
 void token_print(token_t* token) {
-  printf("TokenType: %s, value %s", kTokenNames[token->type], token->value);
+  printf("%s %s", kTokenNames[token->type], token->value);
 }
 
 void token_free(token_t* token) {

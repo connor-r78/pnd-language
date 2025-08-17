@@ -74,7 +74,8 @@ int main(int argc, char** argv) {
 
     while ((token->type != TOKEN_EOF)) {
       token_print(token);
-      printf("\n");
+	printf(" ");
+	fflush(stdout);
       token = token_streamer_next(&streamer);
     }
 

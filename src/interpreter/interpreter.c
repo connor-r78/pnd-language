@@ -4,26 +4,26 @@
 
 #include "../parser/parse.h"
 // testing func untill there is a proper env and interpterter
-SExp* testing_func(int argc, SExp** argv) {
-  printf("testing func called, argc: %d ", argc);
-  for (int i = 0; i < argc; i++) {
-    printf(" argument %d: ", i);
+SExp* testing_func(size_t argc, SExp** argv) {
+  printf("testing func called, argc: %lu ", argc);
+  for (size_t i = 0; i < argc; i++) {
+    printf(" argument %lu: ", i);
     print_sexp(argv[i]);
   }
   printf("\n");
   return argv[0];
 }
-SExp* println(int argc, SExp** argv) {
-  for (int i = 0; i < argc; i++) {
+SExp* println(size_t argc, SExp** argv) {
+  for (size_t i = 0; i < argc; i++) {
     print_sexp(argv[i]);
     printf(" ");
   }
   printf("\n");
   return NULL;
 }
-SExp* add(int argc, SExp** argv) {
+SExp* add(size_t argc, SExp** argv) {
   double sum = 0;
-  for (int i = 0; i < argc; i++) {
+  for (size_t i = 0; i < argc; i++) {
     if (argv[i]->type == SEXP_NUMBER) {
       sum += argv[i]->as.number;
     }
@@ -50,10 +50,10 @@ SExp* eval_sexp(SExp* input) {
   if (first->type != SEXP_SYMBOL) {
     return input;
   }
-  const int argc = input->length - 1;
+  const size_t argc = input->length - 1;
   const char* funcname = first->as.symbol;
   SExp** argv = malloc(input->length * sizeof(SExp*));
-  int i = 0;
+  size_t i = 0;
   SExpList* current = input->as.list->next;
   while (i < input->length - 1) {
     argv[i] = eval_sexp(current->value);

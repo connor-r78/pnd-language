@@ -1,10 +1,6 @@
 #ifndef PND_LEXER_H_
 #define PND_LEXER_H_
 
-#define MAX_NUM_SIZE 256
-#define MAX_STR_SIZE 1024
-#define MAX_SYM_SIZE 1024
-
 #include <stddef.h>
 
 #include "../utils/dynamic_string.h"

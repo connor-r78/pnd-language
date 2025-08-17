@@ -144,23 +144,16 @@ void tokenize_next(token_streamer* streamer) {
 
   // Number
   if (isdigit(current)) {
-    char buffer[MAX_NUM_SIZE];
-    int i = 0;
+    string_t buffer = string_new();
 
     while (streamer->position < streamer->input_length &&
-           isdigit(streamer->input[streamer->position]) &&
-           i < MAX_NUM_SIZE - 1) {
-      buffer[i++] = streamer->input[streamer->position++];
+           isdigit(streamer->input[streamer->position])) {
+      string_push(&buffer, streamer->input[streamer->position++]);
       streamer->current_column++;
     }
 
-    if (i >= MAX_NUM_SIZE - 1) {
-      streamer->current = tokengen(TOKEN_ERROR, "Number too long");
-      return;
-    }
-
-    buffer[i] = '\0';
-    streamer->current = tokengen(TOKEN_NUMBER, buffer);
+    streamer->current = tokengen(TOKEN_NUMBER, string_get(&buffer));
+    string_free(&buffer);
     return;
   }
 
@@ -169,56 +162,41 @@ void tokenize_next(token_streamer* streamer) {
     streamer->position++;
     streamer->current_column++;
 
-    char buffer[MAX_STR_SIZE];
-    int i = 0;
+    string_t buffer;
 
     while (streamer->position < streamer->input_length &&
-           streamer->input[streamer->position] != '"' && i < MAX_STR_SIZE - 1) {
-      buffer[i++] = streamer->input[streamer->position++];
+           streamer->input[streamer->position] != '"') {
+      string_push(&buffer, streamer->input[streamer->position++]);
       streamer->current_column++;
-    }
-
-    if (i >= MAX_STR_SIZE - 1) {
-      streamer->current = tokengen(TOKEN_ERROR, "String too long");
-      return;
     }
 
     if (streamer->position >= streamer->input_length) {
       streamer->current = tokengen(TOKEN_ERROR, "Unterminated string");
+      string_free(&buffer);
       return;
     }
-
-    buffer[i] = '\0';
 
     if (streamer->input[streamer->position] == '"') {
       streamer->position++;
       streamer->current_column++;
     }
 
-    streamer->current = tokengen(TOKEN_STRING, buffer);
+    streamer->current = tokengen(TOKEN_STRING, string_get(&buffer));
+    string_free(&buffer);
     return;
   }
 
   // Special Chars
-  char buffer[MAX_SYM_SIZE];
-  size_t i = 0;
+  string_t buffer = string_new();
 
   while (streamer->position < streamer->input_length &&
          (isalnum(streamer->input[streamer->position]) ||
-          is_allowed_special_character(streamer->input[streamer->position])) &&
-         i < MAX_SYM_SIZE - 1) {
-    buffer[i++] = streamer->input[streamer->position++];
+          is_allowed_special_character(streamer->input[streamer->position]))) {
+    string_push(&buffer, streamer->input[streamer->position++]);
     streamer->current_column++;
   }
 
-  if (i >= MAX_SYM_SIZE - 1) {
-    streamer->current = tokengen(TOKEN_ERROR, "Symbol too long");
-    return;
-  }
-
-  buffer[i] = '\0';
-
-  if (i == 0) {
+  if (buffer.len < 1) {
     // No token was matched by previous rules
     char error_msg[50];
     snprintf(error_msg, sizeof(error_msg), "Unexpected character: %c",
@@ -228,10 +206,12 @@ void tokenize_next(token_streamer* streamer) {
     streamer->current_column++;
 
     streamer->current = tokengen(TOKEN_ERROR, error_msg);
+    string_free(&buffer);
     return;
   }
 
-  streamer->current = tokengen(TOKEN_SYMBOL, buffer);
+  streamer->current = tokengen(TOKEN_SYMBOL, string_get(&buffer));
+  string_free(&buffer);
 }
 
 void token_print(token_t* token) {

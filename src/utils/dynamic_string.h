@@ -15,7 +15,7 @@ typedef struct {
 // Create new empty string.
 // Panic on `malloc` NULL pointer.
 string_t string_new();
-// Create new string with provided input.
+// Create new string with provided input (copies value).
 // Panic on NULL input pointer.
 string_t string_from(const char* input);
 // Create provided string's clone.

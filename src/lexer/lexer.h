@@ -51,7 +51,7 @@ token_t* token_streamer_next(token_streamer* streamer);
 // Free Streamer from memory (frees only content inside)
 void token_streamer_free(token_streamer* streamer);
 
-// ------------------------------------------------
+// -------------------------------------
 
 void token_print(token_t* token);
 void token_free(token_t* token);

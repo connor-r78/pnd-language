@@ -1,20 +1,20 @@
+#include "./interpreter.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "../parser/parse.h"
 #include "../interpreter/env.h"
-#include "./interpreter.h"
+#include "../parser/parse.h"
 interpreter_t* init_interpreter() {
-	 interpreter_t *ret = malloc(sizeof(interpreter_t));
-	ret->env = env_init(1000);
+  interpreter_t* ret = malloc(sizeof(interpreter_t));
+  ret->env = env_init(1000);
 
-	return ret;
-
+  return ret;
 }
 void interpreter_free(interpreter_t* interp) {
-	env_free(interp->env);
-	free(interp);
+  env_free(interp->env);
+  free(interp);
 }
 // testing func untill there is a proper env and interpterter
 SExp* testing_func(size_t argc, SExp** argv) {
@@ -48,27 +48,26 @@ SExp* add(size_t argc, SExp** argv) {
   return result;
 }
 SExp* set(size_t argc, SExp** argv, interpreter_t* interp) {
-		if (argc != 2)
-			return NULL;
-		if(argv[0]->type != SEXP_SYMBOL)
-			return NULL;
+  if (argc != 2)
+    return NULL;
+  if (argv[0]->type != SEXP_SYMBOL)
+    return NULL;
 
-		env_add(interp->env, argv[0]->as.symbol, argv[1]);	
-	return argv[1];
-		}
+  env_add(interp->env, argv[0]->as.symbol, argv[1]);
+  return argv[1];
+}
 
-
-SExp* eval_sexp(interpreter_t *interp, SExp *input) {
+SExp* eval_sexp(interpreter_t* interp, SExp* input) {
   if (!input)
     return NULL;
   // TODO: fix redundant checking, ideally the checking would happen before call
   // to allow for easier recursion;
   if (input->type != SEXP_LIST) {
-	if(input->type == SEXP_SYMBOL) {
-			return env_lookup(interp->env, input->as.symbol);
-	} else {
-    return input;
-		}
+    if (input->type == SEXP_SYMBOL) {
+      return env_lookup(interp->env, input->as.symbol);
+    } else {
+      return input;
+    }
   }
   if (!input->as.list || !input->as.list->value) {
     return NULL;

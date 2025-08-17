@@ -26,6 +26,11 @@ Env *env_init(size_t capacity) {
     return ret;
 }
 
+void env_free(Env* env){
+	free(env->buckets);
+	free(env);
+}
+
 void env_add(Env* env, char* key, SExp* item) {
 	if (!item || !key)
 		return;

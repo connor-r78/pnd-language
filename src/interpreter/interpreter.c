@@ -12,6 +12,10 @@ interpreter_t* init_interpreter() {
 	return ret;
 
 }
+void interpreter_free(interpreter_t* interp) {
+	env_free(interp->env);
+	free(interp);
+}
 // testing func untill there is a proper env and interpterter
 SExp* testing_func(size_t argc, SExp** argv) {
   printf("testing func called, argc: %lu ", argc);

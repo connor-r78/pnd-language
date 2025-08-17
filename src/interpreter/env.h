@@ -15,6 +15,7 @@ typedef struct {
 } Env;
 
 Env *env_init(size_t capacity);
+void env_free(Env* env);
 
 void env_add(Env* env, char* key, SExp* item);
 SExp* env_lookup (Env *env, const char* key);

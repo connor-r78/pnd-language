@@ -46,18 +46,27 @@ int main(int argc, char** argv) {
 
   if (parse) {
     token_streamer streamer = token_streamer_init(input);
+    interpreter_t *interp = init_interpreter();
 
-    token_t* token = token_streamer_next(&streamer);
-    SExp* sexp = parse_sexp(&streamer, token);
-
-    print_sexp(sexp);
-    printf("\n");
-	interpreter_t *interp = init_interpreter();
-
-    print_sexp(eval_sexp(interp, sexp));
-    printf("\n");
+    while(1) {
+        token_t* token = token_streamer_next(&streamer);
+        if (token->type == TOKEN_EOF) {
+            break;
+        }
+        SExp* sexp = parse_sexp(&streamer, token);
+        if (!sexp) {
+            break;
+        }
+        SExp* result = eval_sexp(interp, sexp);
+        if (result) {
+            print_sexp(result);
+            printf("\n");
+        }
+    }
 
     token_streamer_free(&streamer);
+    interpreter_free(interp);
+    
   } else {
     token_streamer streamer = token_streamer_init(input);
 

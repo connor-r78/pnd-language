@@ -3,6 +3,15 @@
 #include <string.h>
 
 #include "../parser/parse.h"
+#include "../interpreter/env.h"
+#include "./interpreter.h"
+interpreter_t* init_interpreter() {
+	 interpreter_t *ret = malloc(sizeof(interpreter_t));
+	ret->env = env_init(1000);
+
+	return ret;
+
+}
 // testing func untill there is a proper env and interpterter
 SExp* testing_func(size_t argc, SExp** argv) {
   printf("testing func called, argc: %lu ", argc);
@@ -34,7 +43,17 @@ SExp* add(size_t argc, SExp** argv) {
   result->length = 0;  // not a list
   return result;
 }
-SExp* eval_sexp(SExp* input) {
+SExp* set(size_t argc, SExp** argv, interpreter_t* interp) {
+		if (argc != 2)
+			return NULL;
+		if(argv[0]->type != SEXP_SYMBOL)
+			return NULL;
+
+		env_add(interp->env, argv[0]->as.symbol, argv[1]);	
+		}
+
+
+SExp* eval_sexp(interpreter_t *interp, SExp *input) {
   if (!input)
     return NULL;
   // TODO: fix redundant checking, ideally the checking would happen before call
@@ -56,7 +75,7 @@ SExp* eval_sexp(SExp* input) {
   size_t i = 0;
   SExpList* current = input->as.list->next;
   while (i < input->length - 1) {
-    argv[i] = eval_sexp(current->value);
+    argv[i] = eval_sexp(interp, current->value);
     current = current->next;
     i++;
   }
@@ -64,6 +83,8 @@ SExp* eval_sexp(SExp* input) {
     return println(argc, argv);
   else if (!strcmp(funcname, "add"))
     return add(argc, argv);
+  else if (!strcmp(funcname, "set"))
+	return set(argc, argv, interp);
   else
     return testing_func(argc, argv);
 }

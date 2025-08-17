@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "interpreter/env.h"
 #include "interpreter/interpreter.h"
 #include "lexer/lexer.h"
 #include "parser/parse.h"
@@ -51,8 +52,9 @@ int main(int argc, char** argv) {
 
     print_sexp(sexp);
     printf("\n");
+	interpreter_t *interp = init_interpreter();
 
-    print_sexp(eval_sexp(sexp));
+    print_sexp(eval_sexp(interp, sexp));
     printf("\n");
 
     token_streamer_free(&streamer);

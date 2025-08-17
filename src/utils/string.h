@@ -48,4 +48,7 @@ void string_push_str(string_t* buffer, char* input);
 // Automatically frees previous data and calculates new len/capacity.
 void string_set(string_t* buffer, char* pointer);
 
+// Removes string buffer from memory.
+void string_free(string_t* buffer);
+
 #endif  // PND_UTILS_STRING_H_

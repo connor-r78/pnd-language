@@ -123,3 +123,14 @@ void string_set(string_t* buffer, char* pointer) {
   buffer->len = strlen(pointer);
   buffer->capacity = buffer->len;
 }
+
+void string_free(string_t* buffer) {
+  if (!buffer)
+    return;
+
+  if (buffer->data)
+    free(buffer->data);
+
+  buffer->len = 0;
+  buffer->capacity = 0;
+}

@@ -16,9 +16,9 @@ void remove_outer_quotes(char* str) {
   }
 }
 void parse_and_print(char* input) {
-  token_streamer streamer = token_streamer_init(input);
+  TokenStreamer streamer = token_streamer_init(input);
 
-  token_t* token = token_streamer_next(&streamer);
+  Token* token = token_streamer_next(&streamer);
   SExp* sexp = parse_sexp(&streamer, token);
 
   print_sexp(sexp);
@@ -56,9 +56,9 @@ int main(int argc, char** argv) {
   if (parse) {
     parse_and_print(input);
   } else {
-    token_streamer streamer = token_streamer_init(input);
+    TokenStreamer streamer = token_streamer_init(input);
 
-    token_t* token = token_streamer_next(&streamer);
+    Token* token = token_streamer_next(&streamer);
 
     while ((token->type != TOKEN_EOF)) {
       token_print(token);

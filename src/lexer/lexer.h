@@ -15,12 +15,12 @@ typedef enum {
   TOKEN_STRING,
   TOKEN_ERROR,
   TOKEN_EOF
-} token_type_t;
+} TokenType;
 
 typedef struct {
-  token_type_t type;
-  string_t value;
-} token_t;
+  TokenType type;
+  String value;
+} Token;
 
 // Token Streamer.
 // Simple wrapper to keep current and previous tokens and automatically free
@@ -33,24 +33,24 @@ typedef struct {
   size_t current_column;
   size_t position;
 
-  token_t* current;
-  token_t* previous;
-} token_streamer;
+  Token* current;
+  Token* previous;
+} TokenStreamer;
 
 // Streamer Initialization
-token_streamer token_streamer_init(const char* input);
+TokenStreamer token_streamer_init(const char* input);
 // Get Current Token
-token_t* token_streamer_current(token_streamer* streamer);
+Token* token_streamer_current(TokenStreamer* streamer);
 // Get Previous Token
-token_t* token_streamer_previous(token_streamer* streamer);
+Token* token_streamer_previous(TokenStreamer* streamer);
 // Tokenize Next Token
-token_t* token_streamer_next(token_streamer* streamer);
+Token* token_streamer_next(TokenStreamer* streamer);
 // Free Streamer from memory (frees only content inside)
-void token_streamer_free(token_streamer* streamer);
+void token_streamer_free(TokenStreamer* streamer);
 
 // -------------------------------------
 
-void token_print(token_t* token);
-void token_free(token_t* token);
+void token_print(Token* token);
+void token_free(Token* token);
 
 #endif  // PND_LEXER_H

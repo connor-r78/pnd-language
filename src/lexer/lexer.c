@@ -12,12 +12,12 @@ const char* kTokenNames[] = {"TOKEN_LPAREN", "TOKEN_RPAREN", "TOKEN_SYMBOL",
                              "TOKEN_EOF"};
 
 // prototypes
-void tokenize_next(token_streamer* streamer);
+void tokenize_next(TokenStreamer* streamer);
 
 // implementations
 
-token_streamer token_streamer_init(const char* input) {
-  token_streamer streamer;
+TokenStreamer token_streamer_init(const char* input) {
+  TokenStreamer streamer;
 
   streamer.input = input;
   streamer.input_length = strlen(input);
@@ -32,27 +32,27 @@ token_streamer token_streamer_init(const char* input) {
   return streamer;
 }
 
-token_t* token_streamer_current(token_streamer* streamer) {
+Token* token_streamer_current(TokenStreamer* streamer) {
   if (streamer && streamer->current) {
     return streamer->current;
   }
   return NULL;
 }
 
-token_t* token_streamer_previous(token_streamer* streamer) {
+Token* token_streamer_previous(TokenStreamer* streamer) {
   if (streamer && streamer->previous) {
     return streamer->previous;
   }
   return NULL;
 }
 
-token_t* token_streamer_next(token_streamer* streamer) {
+Token* token_streamer_next(TokenStreamer* streamer) {
   if (!streamer)
     return NULL;
 
   // moving current to previous
 
-  token_t* previous = streamer->current;
+  Token* previous = streamer->current;
 
   if (streamer->previous)
     token_free(streamer->previous);
@@ -66,7 +66,7 @@ token_t* token_streamer_next(token_streamer* streamer) {
   return token_streamer_current(streamer);
 }
 
-void token_streamer_free(token_streamer* streamer) {
+void token_streamer_free(TokenStreamer* streamer) {
   if (streamer) {
     if (streamer->current) {
       token_free(streamer->current);
@@ -93,8 +93,8 @@ bool is_allowed_special_character(char c) {
   };
 }
 
-token_t* tokengen(token_type_t type, const char* value) {
-  token_t* ret = malloc(sizeof(token_t));
+Token* tokengen(TokenType type, const char* value) {
+  Token* ret = malloc(sizeof(Token));
 
   if (!ret)
     return NULL;
@@ -105,7 +105,7 @@ token_t* tokengen(token_type_t type, const char* value) {
   return ret;
 }
 
-void tokenize_next(token_streamer* streamer) {
+void tokenize_next(TokenStreamer* streamer) {
   // Whitespace (skip)
   while (streamer->position < streamer->input_length &&
          isspace(streamer->input[streamer->position])) {
@@ -144,7 +144,7 @@ void tokenize_next(token_streamer* streamer) {
 
   // Number
   if (isdigit(current)) {
-    string_t buffer = string_new();
+    String buffer = string_new();
 
     while (streamer->position < streamer->input_length &&
            isdigit(streamer->input[streamer->position])) {
@@ -162,7 +162,7 @@ void tokenize_next(token_streamer* streamer) {
     streamer->position++;
     streamer->current_column++;
 
-    string_t buffer;
+    String buffer;
 
     while (streamer->position < streamer->input_length &&
            streamer->input[streamer->position] != '"') {
@@ -187,7 +187,7 @@ void tokenize_next(token_streamer* streamer) {
   }
 
   // Special Chars
-  string_t buffer = string_new();
+  String buffer = string_new();
 
   while (streamer->position < streamer->input_length &&
          (isalnum(streamer->input[streamer->position]) ||
@@ -214,12 +214,12 @@ void tokenize_next(token_streamer* streamer) {
   string_free(&buffer);
 }
 
-void token_print(token_t* token) {
+void token_print(Token* token) {
   printf("TokenType: %s, value %s", kTokenNames[token->type],
          string_get(&token->value));
 }
 
-void token_free(token_t* token) {
+void token_free(Token* token) {
   if (token) {
     string_free(&token->value);
     free(token);

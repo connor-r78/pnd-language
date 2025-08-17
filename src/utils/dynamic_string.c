@@ -1,4 +1,4 @@
-#include "string.h"
+#include "dynamic_string.h"
 
 #include <stdio.h>
 #include <stdlib.h>

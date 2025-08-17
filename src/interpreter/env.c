@@ -27,18 +27,14 @@ Env *env_init(size_t capacity) {
 }
 
 void env_add(Env* env, char* key, SExp* item) {
-	if (!item)
+	if (!item || !key)
 		return;
-	if (item->type != SEXP_SYMBOL)
-		return;
-	if (!item->as.symbol)
-		return;
-	uint32_t h = hash(item->as.symbol);
+	uint32_t h = hash(key);
 	size_t index = h % env->capacity;
 	EnvEntry_t *ent = env->buckets[index];
   EnvEntry_t *prev = NULL;
     while (ent) {
-        if (strcmp(ent->key, item->as.symbol) == 0) {
+        if (strcmp(ent->key, key) == 0) {
             ent->value = item;
             return;
         }

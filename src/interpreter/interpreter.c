@@ -50,6 +50,7 @@ SExp* set(size_t argc, SExp** argv, interpreter_t* interp) {
 			return NULL;
 
 		env_add(interp->env, argv[0]->as.symbol, argv[1]);	
+	return argv[1];
 		}
 
 
@@ -59,7 +60,11 @@ SExp* eval_sexp(interpreter_t *interp, SExp *input) {
   // TODO: fix redundant checking, ideally the checking would happen before call
   // to allow for easier recursion;
   if (input->type != SEXP_LIST) {
+	if(input->type == SEXP_SYMBOL) {
+			return env_lookup(interp->env, input->as.symbol);
+	} else {
     return input;
+		}
   }
   if (!input->as.list || !input->as.list->value) {
     return NULL;
@@ -71,6 +76,17 @@ SExp* eval_sexp(interpreter_t *interp, SExp *input) {
   }
   const size_t argc = input->length - 1;
   const char* funcname = first->as.symbol;
+  if (strcmp(funcname, "set") == 0) {
+    SExp** argv = malloc(argc * sizeof(SExp*));
+    SExpList* current = input->as.list->next;
+    // For set, don't evaluate the first argument.
+    argv[0] = current->value;
+    current = current->next;
+    // Evaluate the second argument.
+    argv[1] = eval_sexp(interp, current->value);
+    return set(argc, argv, interp);
+  }
+
   SExp** argv = malloc(input->length * sizeof(SExp*));
   size_t i = 0;
   SExpList* current = input->as.list->next;
@@ -83,8 +99,6 @@ SExp* eval_sexp(interpreter_t *interp, SExp *input) {
     return println(argc, argv);
   else if (!strcmp(funcname, "add"))
     return add(argc, argv);
-  else if (!strcmp(funcname, "set"))
-	return set(argc, argv, interp);
   else
     return testing_func(argc, argv);
 }

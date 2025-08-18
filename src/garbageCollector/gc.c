@@ -1,4 +1,4 @@
-#include "garbageCollector.h"
+#include "gc.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>

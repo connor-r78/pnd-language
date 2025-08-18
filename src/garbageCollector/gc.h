@@ -1,3 +1,18 @@
+/*
+
+Using the functions in this header file:
+
+Defining the bottom of the stack:
+
+int stack_bottom;
+gc_init(&stack_bottom);
+
+Triggering garbage collection:
+
+gc_collect();
+
+*/
+
 #ifndef GC_H
 #define GC_H
 

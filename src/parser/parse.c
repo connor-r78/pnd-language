@@ -13,6 +13,9 @@ void print_sexp(SExp* sexp) {
   }
 
   switch (sexp->type) {
+    case SEXP_NIL:
+      printf("NIL");
+      break;
     case SEXP_SYMBOL:
       printf("%s", sexp->as.symbol);
       break;

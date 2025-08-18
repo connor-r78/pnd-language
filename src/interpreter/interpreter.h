@@ -5,7 +5,7 @@
 typedef struct {
 	Env* env;
 } interpreter_t;
-SExp* eval_sexp(interpreter_t *interp, SExp *input);
+SExp eval_sexp(interpreter_t *interp, SExp *input);
 interpreter_t *init_interpreter();
 void interpreter_free(interpreter_t* interp);
 

@@ -57,9 +57,9 @@ int main(int argc, char** argv) {
       if (!sexp) {
         break;
       }
-      SExp* result = eval_sexp(interp, sexp);
-      if (result) {
-        print_sexp(result);
+      SExp sexp_val = eval_sexp(interp, sexp);
+      if (sexp_val.type != SEXP_NIL) {
+        print_sexp(&sexp_val);
         printf("\n");
       }
     }

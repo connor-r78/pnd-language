@@ -49,3 +49,8 @@ _Other Constants_ should have prefix `k`. <br/>
 6. **Comments** should be minimal and helpful. Please do not leave a comment saying \"_foo_ gets set to _7_\" <br/>
 Always leave necessary documentation for provided API and changes.
 7. **The code blocks** should not be "glued together", they should be separated according to their logical meaning. AKA put line breaks after loops, group variables, etc.
+8. **Header Guard** should follow next syntax: `PROJECTNAME_[SUBDIRS_]MODULENAME_H_`
+   - `PROJECTNAME` - uppercase project name (here `PND`)
+   - `SUBDIRS` - optional nested directories
+   - `MODULENAME` - uppercase module name
+   - Suffix `H` is mandatory

@@ -1,12 +1,12 @@
 #ifndef PND_ENV_H
 #define PND_ENV_H
 #include <stdlib.h>
-#include "../parser/parse.h"
+#include "value.h"
 
 typedef struct Entry {
     char *key;
-    SExp *value;
-    struct Entry *next;  // linked list for collission
+    Value value;
+    struct Entry *next;  // linked list for collision
 } EnvEntry_t;
 
 typedef struct {
@@ -17,7 +17,7 @@ typedef struct {
 Env *env_init(size_t capacity);
 void env_free(Env* env);
 
-void env_add(Env* env, char* key, SExp* item);
-SExp* env_lookup (Env *env, const char* key);
+void env_add(Env* env, const char* key, Value value);
+Value env_lookup(Env *env, const char* key);
 
 #endif

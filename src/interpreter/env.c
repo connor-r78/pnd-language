@@ -26,28 +26,45 @@ Env* env_init(size_t capacity) {
 }
 
 void env_free(Env* env) {
+  if (!env) return;
+  
+  for (size_t i = 0; i < env->capacity; i++) {
+    EnvEntry_t* current = env->buckets[i];
+    while (current) {
+      EnvEntry_t* next = current->next;
+      free(current->key);
+      value_free(&current->value);
+      free(current);
+      current = next;
+    }
+  }
+  
   free(env->buckets);
   free(env);
 }
 
-void env_add(Env* env, char* key, SExp* item) {
-  if (!item || !key)
-    return;
+void env_add(Env* env, const char* key, Value value) {
+  if (!env || !key) return;
+  
   uint32_t h = hash(key);
   size_t index = h % env->capacity;
   EnvEntry_t* ent = env->buckets[index];
   EnvEntry_t* prev = NULL;
+  
   while (ent) {
     if (strcmp(ent->key, key) == 0) {
-      ent->value = item;
+      value_free(&ent->value);
+      ent->value = value;
       return;
     }
     prev = ent;
     ent = ent->next;
   }
+  
   EnvEntry_t* new_entry = malloc(sizeof(EnvEntry_t));
-  new_entry->key = key;
-  new_entry->value = item;
+  new_entry->key = malloc(strlen(key) + 1);
+  strcpy(new_entry->key, key);
+  new_entry->value = value;
   new_entry->next = NULL;
 
   if (prev) {
@@ -57,15 +74,20 @@ void env_add(Env* env, char* key, SExp* item) {
   }
 }
 
-SExp* env_lookup(Env* env, const char* key) {
+Value env_lookup(Env* env, const char* key) {
+  if (!env || !key) 
+	return (Value){.type = VALUE_NIL};
+  
   uint32_t h = hash(key);
   size_t index = h % env->capacity;
   EnvEntry_t* ent = env->buckets[index];
+  
   while (ent) {
     if (!strcmp(ent->key, key)) {
       return ent->value;
     }
     ent = ent->next;
   }
-  return NULL;
+  
+  return (Value){.type = VALUE_NIL};
 }

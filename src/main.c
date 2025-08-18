@@ -6,6 +6,7 @@
 
 #include "interpreter/env.h"
 #include "interpreter/interpreter.h"
+#include "interpreter/value.h"
 #include "lexer/lexer.h"
 #include "parser/parse.h"
 
@@ -57,11 +58,12 @@ int main(int argc, char** argv) {
       if (!sexp) {
         break;
       }
-      SExp sexp_val = eval_sexp(interp, sexp);
-      if (sexp_val.type != SEXP_NIL) {
-        print_sexp(&sexp_val);
+      Value result = eval_sexp(interp, sexp);
+      if (result.type != VALUE_NIL) {
+        value_print(&result);
         printf("\n");
       }
+      // No need to free until we have GC
     }
 
     token_streamer_free(&streamer);

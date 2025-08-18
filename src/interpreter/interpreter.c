@@ -2,6 +2,7 @@
 #include "./env.h"
 #include "./value.h"
 #include "../parser/parse.h"
+#include "./builtins.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,6 +11,7 @@
 interpreter_t* init_interpreter() {
   interpreter_t* ret = malloc(sizeof(interpreter_t));
   ret->env = env_init(1000);
+  init_builtins(ret->env);
   return ret;
 }
 
@@ -18,42 +20,6 @@ void interpreter_free(interpreter_t* interp) {
   free(interp);
 }
 
-Value builtin_println(size_t argc, Value* argv) {
-  for (size_t i = 0; i < argc; i++) {
-    value_print(&argv[i]);
-    if (i < argc - 1) {
-      printf(" ");
-    }
-  }
-  printf("\n");
-  Value nil = {VALUE_NIL, .length = 0};
-  return nil;
-}
-
-Value builtin_add(size_t argc, Value* argv) {
-  double sum = 0.0;
-  for (size_t i = 0; i < argc; i++) {
-    if (argv[i].type == VALUE_NUMBER) {
-      sum += argv[i].as.number;
-    }
-  }
-  Value result = {VALUE_NUMBER, .as.number = sum, .length = 0};
-  return result;
-}
-
-Value builtin_testing_func(size_t argc, Value* argv) {
-  printf("testing func called, argc: %lu ", argc);
-  for (size_t i = 0; i < argc; i++) {
-    printf(" argument %lu: ", i);
-    value_print(&argv[i]);
-  }
-  printf("\n");
-  if (argc > 0) {
-    return argv[0];
-  }
-  Value nil = {VALUE_NIL, .length = 0};
-  return nil;
-}
 // Forward decleration
 Value eval_value(interpreter_t* interp, Value value);
 
@@ -138,15 +104,11 @@ Value eval_value(interpreter_t* interp, Value value) {
         Value result;
         result.type = VALUE_NIL;
         result.length = 0;
-        
-        if (strcmp(funcname, "println") == 0) {
-          result = builtin_println(argc, argv);
-        } else if (strcmp(funcname, "add") == 0) {
-          result = builtin_add(argc, argv);
-        } else {
-          result = builtin_testing_func(argc, argv);
-        }
-        
+       	Value func  = env_lookup(interp->env, funcname);
+	if(func.type != VALUE_FUNCTION) {
+		return (Value){.type = VALUE_NIL};
+	}
+	result = func.as.function(argc, argv);
         if (argv) {
           // for (size_t i = 0; i < argc; i++) {
           //   value_free(&argv[i]);

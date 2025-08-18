@@ -29,6 +29,7 @@ struct Value {
     ValueList* list;
     BuiltinFunction function;
   } as;
+	//TODO: move this
   size_t length; // for lists, 0 for non-lists
 };
 

@@ -43,7 +43,7 @@ Value eval_value(interpreter_t* interp, Value value) {
     case VALUE_NIL:
     case VALUE_NUMBER:
     case VALUE_STRING:
-    case VALUE_FUNCTION:
+    case VALUE_CFUNC:
       return value;
       
     case VALUE_SYMBOL:
@@ -66,8 +66,20 @@ Value eval_value(interpreter_t* interp, Value value) {
         
         const char* funcname = first.as.symbol;
         size_t argc = value.length - 1;
+        // handle special functions which cant have all arguments looked up/evaluated 
+        if (strcmp(funcname, "quote") == 0) {
+          if (argc < 1) {
+            Value nil = {VALUE_NIL, .length = 0};
+            return nil;
+          }
+          ValueList* current = value.as.list->next;
+          if (!current) {
+            Value nil = {VALUE_NIL, .length = 0};
+            return nil;
+          }
+          return current->value;
+        }
         
-        // handle special
         if (strcmp(funcname, "set") == 0) {
           if (argc != 2) {
             Value nil = {VALUE_NIL, .length = 0};
@@ -104,15 +116,13 @@ Value eval_value(interpreter_t* interp, Value value) {
         Value result;
         result.type = VALUE_NIL;
         result.length = 0;
-       	Value func  = env_lookup(interp->env, funcname);
-	if(func.type != VALUE_FUNCTION) {
+        	Value func  = env_lookup(interp->env, funcname);
+	if(func.type != VALUE_CFUNC) {
+		if (argv) free(argv);
 		return (Value){.type = VALUE_NIL};
 	}
 	result = func.as.function(argc, argv);
         if (argv) {
-          // for (size_t i = 0; i < argc; i++) {
-          //   value_free(&argv[i]);
-          // }
           free(argv);
         }
         

@@ -44,6 +44,35 @@ void print_sexp(SExp* sexp) {
   }
 }
 
+static SExp* make_list_from_items(SExp** items, size_t count) {
+  SExp* list = malloc(sizeof(SExp));
+  list->type = SEXP_LIST;
+  list->as.list = NULL;
+  list->length = count;
+
+  if (count == 0) {
+    list->as.list = NULL;
+    return list;
+  }
+
+  SExpList* head = NULL;
+  SExpList* tail = NULL;
+  for (size_t i = 0; i < count; i++) {
+    SExpList* node = malloc(sizeof(SExpList));
+    node->value = items[i];
+    node->next = NULL;
+    if (!head) {
+      head = node;
+      tail = node;
+    } else {
+      tail->next = node;
+      tail = node;
+    }
+  }
+  list->as.list = head;
+  return list;
+}
+
 SExp* parse_list(token_streamer* streamer) {
   SExp* ret = malloc(sizeof(SExp));
 
@@ -110,6 +139,29 @@ SExp* parse_sexp(token_streamer* streamer, token_t* token) {
       ret->as.string = strdup(token->value);
 
       return ret;
+    case TOKEN_QUOTE: {
+      token_t* next = token_streamer_next(streamer);
+      SExp* quoted = parse_sexp(streamer, next);
+
+      SExp* sym = malloc(sizeof(SExp));
+      sym->type = SEXP_SYMBOL;
+      sym->as.symbol = strdup("quote");
+
+      if (quoted) {
+        SExp* items[2];
+        items[0] = sym;
+        items[1] = quoted;
+        SExp* list = make_list_from_items(items, 2);
+        free(ret);
+        return list;
+      } else {
+        SExp* items[1];
+        items[0] = sym;
+        SExp* list = make_list_from_items(items, 1);
+        free(ret);
+        return list;
+      }
+    }
     case TOKEN_RPAREN:
       free(ret);
       return NULL;

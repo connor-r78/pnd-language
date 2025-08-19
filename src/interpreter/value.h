@@ -12,7 +12,7 @@ typedef enum {
   VALUE_STRING,
   VALUE_SYMBOL,
   VALUE_LIST,
-  VALUE_FUNCTION
+  VALUE_CFUNC,
 } ValueType;
 
 // Forward declarations

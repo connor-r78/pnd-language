@@ -37,8 +37,8 @@ void value_print(const Value* value) {
             }
             printf(")");
             break;
-        case VALUE_FUNCTION:
-            printf("<function>");
+        case VALUE_CFUNC:
+            printf("<c function>");
             break;
     }
 }

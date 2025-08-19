@@ -19,34 +19,49 @@ void remove_outer_quotes(char* str) {
   }
 }
 
+void print_usage(char* name) {
+  fprintf(stderr,
+          "Usage: %s [options] <filename>\n"
+          "Options:"
+          "-t   Print tokens."
+          "-p   Print AST.",
+          name);
+}
+
 int main(int argc, char** argv) {
   int opt;
   bool parse = false;
-  char* input = NULL;
+  bool tokenize = false;
+  bool execute = true;
 
-  while ((opt = getopt(argc, argv, "pc:")) != -1) {
+  while ((opt = getopt(argc, argv, "tp")) != -1) {
     switch (opt) {
+      case 't':
+        tokenize = true;
+        execute = false;
+        break;
       case 'p':
         parse = true;
-        break;
-      case 'c':
-        input = optarg;
+        execute = false;
         break;
       case '?':
-        printf("unknown option: %c\n", optopt);
+        fprintf(stderr, "unknown option: %c\n", optopt);
+        print_usage(argv[0]);
         break;
     }
   }
 
+  char* input = argv[optind];
   if (!input) {
     fprintf(stderr, "Usage: %s -c 'code'\n", argv[0]);
+    print_usage(argv[0]);
     return 1;
   }
 
   remove_outer_quotes(input);
 
-  if (parse) {
-    token_streamer streamer = token_streamer_init(input);
+  token_streamer streamer = token_streamer_init(input);
+  if (execute) {
     interpreter_t* interp = init_interpreter();
 
     while (1) {
@@ -66,21 +81,39 @@ int main(int argc, char** argv) {
       // No need to free until we have GC
     }
 
-    token_streamer_free(&streamer);
     interpreter_free(interp);
+    token_streamer_free(&streamer);
+  }
 
-  } else {
+  if (tokenize) {
     token_streamer streamer = token_streamer_init(input);
 
     token_t* token = token_streamer_next(&streamer);
 
     while ((token->type != TOKEN_EOF)) {
       token_print(token);
-	printf(" ");
-	fflush(stdout);
+      printf(" ");
+      fflush(stdout);
       token = token_streamer_next(&streamer);
     }
+    printf("\n");
+    token_streamer_free(&streamer);
+  }
+  if (parse) {
+    streamer = token_streamer_init(input);
 
+    while (1) {
+      token_t* token = token_streamer_next(&streamer);
+      if (token->type == TOKEN_EOF) {
+        break;
+      }
+      SExp* sexp = parse_sexp(&streamer, token);
+      if (!sexp) {
+        break;
+      }
+      print_sexp(sexp);
+      printf("\n");
+    }
     token_streamer_free(&streamer);
   }
 

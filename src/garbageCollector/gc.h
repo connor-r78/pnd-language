@@ -13,8 +13,8 @@ gc_collect();
 
 */
 
-#ifndef GC_H
-#define GC_H
+#ifndef PND_GC_H_
+#define PND_GC_H_
 
 #include <stddef.h>
 

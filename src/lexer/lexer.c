@@ -8,8 +8,8 @@
 
 // Tokens stringified variants
 const char* kTokenNames[] = {"TOKEN_LPAREN", "TOKEN_RPAREN", "TOKEN_SYMBOL",
-                             "TOKEN_NUMBER", "TOKEN_STRING", "TOKEN_QUOTE", "TOKEN_ERROR",
-                             "TOKEN_EOF"};
+                             "TOKEN_NUMBER", "TOKEN_STRING", "TOKEN_QUOTE",
+                             "TOKEN_ERROR",  "TOKEN_EOF"};
 
 // prototypes
 void tokenize_next(token_streamer* streamer);

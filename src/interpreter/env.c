@@ -26,8 +26,9 @@ Env* env_init(size_t capacity) {
 }
 
 void env_free(Env* env) {
-  if (!env) return;
-  
+  if (!env)
+    return;
+
   for (size_t i = 0; i < env->capacity; i++) {
     EnvEntry_t* current = env->buckets[i];
     while (current) {
@@ -38,19 +39,20 @@ void env_free(Env* env) {
       current = next;
     }
   }
-  
+
   free(env->buckets);
   free(env);
 }
 
 void env_add(Env* env, const char* key, Value value) {
-  if (!env || !key) return;
-  
+  if (!env || !key)
+    return;
+
   uint32_t h = hash(key);
   size_t index = h % env->capacity;
   EnvEntry_t* ent = env->buckets[index];
   EnvEntry_t* prev = NULL;
-  
+
   while (ent) {
     if (strcmp(ent->key, key) == 0) {
       value_free(&ent->value);
@@ -60,7 +62,7 @@ void env_add(Env* env, const char* key, Value value) {
     prev = ent;
     ent = ent->next;
   }
-  
+
   EnvEntry_t* new_entry = malloc(sizeof(EnvEntry_t));
   new_entry->key = malloc(strlen(key) + 1);
   strcpy(new_entry->key, key);
@@ -75,19 +77,19 @@ void env_add(Env* env, const char* key, Value value) {
 }
 
 Value env_lookup(Env* env, const char* key) {
-  if (!env || !key) 
-	return (Value){.type = VALUE_NIL};
-  
+  if (!env || !key)
+    return (Value){.type = VALUE_NIL};
+
   uint32_t h = hash(key);
   size_t index = h % env->capacity;
   EnvEntry_t* ent = env->buckets[index];
-  
+
   while (ent) {
     if (!strcmp(ent->key, key)) {
       return ent->value;
     }
     ent = ent->next;
   }
-  
+
   return (Value){.type = VALUE_NIL};
 }

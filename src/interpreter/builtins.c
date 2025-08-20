@@ -1,16 +1,19 @@
 #include "builtins.h"
-#include "env.h"
-#include "value.h"
 
 #include <stdio.h>
 
-//if this affects startup time too much we can run this at build time and save to a binary, then embed or link the result into the final executable
+#include "env.h"
+#include "value.h"
+
+// if this affects startup time too much we can run this at build time and save
+// to a binary, then embed or link the result into the final executable
 void init_builtins(Env* env) {
-	//TODO: move them here
-	env_add(env, "println", (Value){.type = VALUE_CFUNC,
-	.as.cfunc = &builtin_println, .length = 0 });	
-	env_add(env, "add", (Value){.type = VALUE_CFUNC,
-	.as.cfunc = &builtin_add, .length = 0 });	
+  // TODO: move them here
+  env_add(
+      env, "println",
+      (Value){.type = VALUE_CFUNC, .as.cfunc = &builtin_println, .length = 0});
+  env_add(env, "add",
+          (Value){.type = VALUE_CFUNC, .as.cfunc = &builtin_add, .length = 0});
 }
 
 Value builtin_println(size_t argc, Value* argv) {

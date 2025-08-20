@@ -7,7 +7,7 @@ typedef struct SExp SExp;
 
 // SExp Atom | List<Sexp>
 typedef enum {
-
+  SEXP_NIL,
   SEXP_SYMBOL,
   SEXP_NUMBER,
   SEXP_STRING,

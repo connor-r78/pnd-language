@@ -1,8 +1,8 @@
-#ifndef PND_BUILTINS_H
-#define PND_BUILTINS_H
+#ifndef PND_INTERPRETER_BUILTINS_H
+#define PND_INTERPRETER_BUILTINS_H
 
-#include "./interpreter.h"
 #include "./env.h"
+#include "./interpreter.h"
 #include "./value.h"
 
 Value builtin_println(size_t argc, Value* argv);

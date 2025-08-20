@@ -65,19 +65,22 @@ Value eval_value(interpreter_t* interp, Value value) {
         if (strcmp(funcname, "lambda") == 0) {
           if (argc >= 2) {
             LambdaFunction* l = malloc(sizeof(LambdaFunction));
+
             ValueList* params_node = value.as.list->next;
+            // params are passed as a quote '(asdf) -> (quote asdf)
+            // so this is needed to get it as a raw list
             Value params_val = params_node->value;
             if (params_val.type == VALUE_LIST) {
               params_val = eval_value(interp, params_val);
-            }
-            if (params_val.type == VALUE_LIST) {
               l->args = params_val.as.list;
             } else {
               l->args = NULL;
             }
-
+            // functions can have multiple expressions, so evaluate them in a
+            // loop
             ValueList* body_src = params_node->next;
             l->body = NULL;
+            // make a copy of the body source
             ValueList** body_tail = &l->body;
             ValueList* cur = body_src;
             while (cur) {
@@ -96,7 +99,7 @@ Value eval_value(interpreter_t* interp, Value value) {
             return (Value){.type = VALUE_LAMBDA, .as.lambda = l};
           }
         }
-
+        // input '(a b) -> (quote a b) so we handle it here
         if (strcmp(funcname, "quote") == 0) {
           if (argc < 1) {
             return nil;

@@ -1,12 +1,17 @@
+/*
+ * This file contains the code for the enviornment (function and variable
+ * lookups) using a hash map
+ */
 #include "../interpreter/env.h"
 
-#include <assert.h>
 #include <stdint.h>
 #include <string.h>
 
 #define FNV_32_PRIME ((uint32_t)0x01000193)
 #define FNV_32_INTNUM ((uint32_t)0x811c9dc5)
 
+// FNV1-a hash
+// https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
 uint32_t hash(const char* str) {
   unsigned char* ch = (unsigned char*)str;
   uint32_t hval = FNV_32_INTNUM;

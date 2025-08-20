@@ -38,6 +38,9 @@ void value_print(const Value* value) {
     case VALUE_CFUNC:
       printf("<c function>");
       break;
+    case VALUE_LAMBDA:
+      // TODO: actually print
+      printf("<lambda function>");
   }
 }
 
@@ -102,6 +105,6 @@ void value_free(Value* val) {
       current = next;
     }
   }
-  // dont free it if its on the stack
+  // dont since they are on the stack for now
   // free(val);
 }

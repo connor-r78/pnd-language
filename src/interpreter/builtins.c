@@ -1,3 +1,8 @@
+/*
+ * This file contains all the builtin normal functions
+ * (those which dont need special argument handling)
+ * and their addition to the enviornment in init_builtins.
+ */
 #include "builtins.h"
 
 #include <stdio.h>

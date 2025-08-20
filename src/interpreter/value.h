@@ -1,10 +1,10 @@
-#ifndef PND_VALUE_H
-#define PND_VALUE_H
+#ifndef PND_INTERPRETER_VALUE_H_
+#define PND_INTERPRETER_VALUE_H_
+
+#include <stdbool.h>
+#include <stddef.h>
 
 #include "../parser/parse.h"
-
-#include <stddef.h>
-#include <stdbool.h>
 
 typedef enum {
   VALUE_NIL,
@@ -22,8 +22,8 @@ typedef struct ValueList ValueList;
 
 typedef Value (*BuiltinFunction)(size_t argc, Value* argv);
 typedef struct {
-	ValueList* args;
-	ValueList* body;
+  ValueList* args;
+  ValueList* body;
 } LambdaFunction;
 
 struct Value {
@@ -36,8 +36,8 @@ struct Value {
     BuiltinFunction cfunc;
     LambdaFunction* lambda;
   } as;
-	//TODO: move this
-  size_t length; // for lists, 0 for non-lists
+  // TODO: move this
+  size_t length;  // for lists, 0 for non-lists
 };
 
 struct ValueList {
@@ -47,7 +47,7 @@ struct ValueList {
 
 void value_print(const Value* value);
 Value sexp_to_value(const SExp* sexp);
-//leaks memory untill garbage collector
+// leaks memory untill garbage collector
 void value_free(Value* val);
 
-#endif // PND_VALUE_H
+#endif  // PND_VALUE_H

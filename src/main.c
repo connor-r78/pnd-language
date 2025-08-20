@@ -21,10 +21,10 @@ void remove_outer_quotes(char* str) {
 
 void print_usage(char* name) {
   fprintf(stderr,
-          "Usage: %s [options] <filename>\n"
-          "Options:"
-          "-t   Print tokens."
-          "-p   Print AST.",
+          "Usage: %s [options] <code>\n\n"
+          "Options:\n"
+          "-t   Print tokens.\n"
+          "-p   Print AST.\n",
           name);
 }
 
@@ -53,7 +53,6 @@ int main(int argc, char** argv) {
 
   char* input = argv[optind];
   if (!input) {
-    fprintf(stderr, "Usage: %s -c 'code'\n", argv[0]);
     print_usage(argv[0]);
     return 1;
   }

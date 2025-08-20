@@ -13,6 +13,7 @@ typedef enum {
   TOKEN_SYMBOL,
   TOKEN_NUMBER,
   TOKEN_STRING,
+  TOKEN_QUOTE,
   TOKEN_ERROR,
   TOKEN_EOF
 } TokenType;

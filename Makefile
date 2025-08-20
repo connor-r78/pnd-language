@@ -29,3 +29,4 @@ clean:
 
 format:
 	find $(SRC_DIR) -name '*.c' -exec clang-format -i -style=file {} +
+	find $(SRC_DIR) -name '*.h' -exec clang-format -i -style=file {} +

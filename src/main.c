@@ -28,6 +28,22 @@ void parse_and_print(char* input) {
   print_sexp(sexp);
   printf("\n");
 
+char* read_file(const char* filename) {
+    FILE* f = fopen(filename, "rb");
+
+    fseek(f, 0, SEEK_END);
+    long length = ftell(f);
+    fseek(f, 0, SEEK_SET);
+
+    char* buffer = malloc(length + 1);
+
+    fread(buffer, 1, length, f);
+    buffer[length] = '\0';
+    fclose(f);
+
+    return buffer;
+}
+
 void print_usage(char* name) {
   fprintf(stderr,
           "Usage: %s [options] <code>\n\n"
@@ -60,10 +76,19 @@ int main(int argc, char** argv) {
     }
   }
 
-  char* input = argv[optind];
-  if (!input) {
-    print_usage(argv[0]);
-    return 1;
+  char* input_from_file = NULL;
+  input_from_file = read_file(argv[optind]);
+
+  char* input = NULL;
+
+  if (input_from_file) {
+    input = input_from_file;
+  } else {
+    input = argv[optind];
+    if (!input) {
+      print_usage(argv[0]);
+      return 1;
+    }
   }
 
   remove_outer_quotes(input);

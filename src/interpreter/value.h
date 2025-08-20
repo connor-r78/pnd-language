@@ -47,7 +47,7 @@ struct ValueList {
 
 void value_print(const Value* value);
 Value sexp_to_value(const SExp* sexp);
-// leaks memory untill garbage collector
+// leaks memory until garbage collector
 void value_free(Value* val);
 
 #endif  // PND_VALUE_H

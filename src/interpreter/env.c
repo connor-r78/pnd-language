@@ -1,5 +1,5 @@
 /*
- * This file contains the code for the enviornment (function and variable
+ * This file contains the code for the environment (function and variable
  * lookups) using a hash map
  */
 #include "../interpreter/env.h"

@@ -21,7 +21,7 @@ void interpreter_free(interpreter_t* interp) {
   free(interp);
 }
 
-// Forward decleration
+// Forward declaration
 Value eval_value(interpreter_t* interp, Value value);
 
 const Value nil = {VALUE_NIL, .length = 0};

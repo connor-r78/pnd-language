@@ -1,7 +1,7 @@
 /*
  * This file contains all the builtin normal functions
  * (those which dont need special argument handling)
- * and their addition to the enviornment in init_builtins.
+ * and their addition to the environment in init_builtins.
  */
 #include "builtins.h"
 

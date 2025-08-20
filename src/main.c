@@ -27,6 +27,7 @@ void parse_and_print(char* input) {
 
   print_sexp(sexp);
   printf("\n");
+}
 
 void print_usage(char* name) {
   fprintf(stderr,
@@ -68,12 +69,12 @@ int main(int argc, char** argv) {
 
   remove_outer_quotes(input);
 
-  token_streamer streamer = token_streamer_init(input);
+  TokenStreamer streamer = token_streamer_init(input);
   if (execute) {
     interpreter_t* interp = init_interpreter();
 
     while (1) {
-      token_t* token = token_streamer_next(&streamer);
+      Token* token = token_streamer_next(&streamer);
       if (token->type == TOKEN_EOF) {
         break;
       }
@@ -94,7 +95,7 @@ int main(int argc, char** argv) {
   }
 
   if (tokenize) {
-    token_streamer streamer = token_streamer_init(input);
+    TokenStreamer streamer = token_streamer_init(input);
 
     Token* token = token_streamer_next(&streamer);
 
@@ -111,7 +112,7 @@ int main(int argc, char** argv) {
     streamer = token_streamer_init(input);
 
     while (1) {
-      token_t* token = token_streamer_next(&streamer);
+      Token* token = token_streamer_next(&streamer);
       if (token->type == TOKEN_EOF) {
         break;
       }

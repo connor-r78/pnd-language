@@ -67,7 +67,7 @@ Value sexp_to_value(const SExp* sexp) {
       break;
     case SEXP_SYMBOL:
       val.type = VALUE_SYMBOL;
-      val.as.symbol = strdup(sexp->as.string);
+      val.as.symbol = strdup(sexp->as.symbol);
       break;
     case SEXP_LIST: {
       val.type = VALUE_LIST;

@@ -31,7 +31,7 @@ struct SExp {
   size_t length;
 };
 
-SExp* parse_sexp(token_streamer* streamer, token_t* token);
+SExp* parse_sexp(TokenStreamer* streamer, Token* token);
 
 void print_sexp(SExp* sexp);
 void parse_and_print(char* input);

@@ -1,11 +1,9 @@
 #ifndef PND_LEXER_H_
 #define PND_LEXER_H_
 
-#define MAX_NUM_SIZE 256
-#define MAX_STR_SIZE 1024
-#define MAX_SYM_SIZE 1024
-
 #include <stddef.h>
+
+#include "../utils/dynamic_string.h"
 
 // Token.
 // Abstract structure which contains type, value, and metadata of lexeme.
@@ -18,13 +16,12 @@ typedef enum {
   TOKEN_QUOTE,
   TOKEN_ERROR,
   TOKEN_EOF
-} token_type_t;
+} TokenType;
 
 typedef struct {
-  token_type_t type;
-  char value[MAX_SYM_SIZE];
-  int length;
-} token_t;
+  TokenType type;
+  String value;
+} Token;
 
 // Token Streamer.
 // Simple wrapper to keep current and previous tokens and automatically free
@@ -37,24 +34,24 @@ typedef struct {
   size_t current_column;
   size_t position;
 
-  token_t* current;
-  token_t* previous;
-} token_streamer;
+  Token* current;
+  Token* previous;
+} TokenStreamer;
 
 // Streamer Initialization
-token_streamer token_streamer_init(const char* input);
+TokenStreamer token_streamer_init(const char* input);
 // Get Current Token
-token_t* token_streamer_current(token_streamer* streamer);
+Token* token_streamer_current(TokenStreamer* streamer);
 // Get Previous Token
-token_t* token_streamer_previous(token_streamer* streamer);
+Token* token_streamer_previous(TokenStreamer* streamer);
 // Tokenize Next Token
-token_t* token_streamer_next(token_streamer* streamer);
+Token* token_streamer_next(TokenStreamer* streamer);
 // Free Streamer from memory (frees only content inside)
-void token_streamer_free(token_streamer* streamer);
+void token_streamer_free(TokenStreamer* streamer);
 
-// ------------------------------------------------
+// -------------------------------------
 
-void token_print(token_t* token);
-void token_free(token_t* token);
+void token_print(Token* token);
+void token_free(Token* token);
 
 #endif  // PND_LEXER_H

@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "../parser/parse.h"
+#include "../gc/gc.h"
 #include "./builtins.h"
 #include "./env.h"
 #include "./value.h"

@@ -23,3 +23,4 @@ void env_add(Env* env, const char* key, Value value);
 Value env_lookup(Env* env, const char* key);
 
 #endif
+#endif

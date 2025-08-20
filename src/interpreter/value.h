@@ -13,12 +13,18 @@ typedef enum {
   VALUE_SYMBOL,
   VALUE_LIST,
   VALUE_CFUNC,
+  VALUE_LAMBDA,
 } ValueType;
 
 // Forward declarations
 typedef struct Value Value;
 typedef struct ValueList ValueList;
+
 typedef Value (*BuiltinFunction)(size_t argc, Value* argv);
+typedef struct {
+	ValueList* args;
+	ValueList* body;
+} LambdaFunction;
 
 struct Value {
   ValueType type;
@@ -27,7 +33,8 @@ struct Value {
     char* string;
     char* symbol;
     ValueList* list;
-    BuiltinFunction function;
+    BuiltinFunction cfunc;
+    LambdaFunction* lambda;
   } as;
 	//TODO: move this
   size_t length; // for lists, 0 for non-lists

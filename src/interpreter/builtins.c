@@ -8,9 +8,9 @@
 void init_builtins(Env* env) {
 	//TODO: move them here
 	env_add(env, "println", (Value){.type = VALUE_CFUNC,
-	.as.function = &builtin_println, .length = 0 });	
+	.as.cfunc = &builtin_println, .length = 0 });	
 	env_add(env, "add", (Value){.type = VALUE_CFUNC,
-	.as.function = &builtin_add, .length = 0 });	
+	.as.cfunc = &builtin_add, .length = 0 });	
 }
 
 Value builtin_println(size_t argc, Value* argv) {

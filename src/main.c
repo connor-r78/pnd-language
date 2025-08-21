@@ -49,8 +49,9 @@ void print_usage(char* name) {
   fprintf(stderr,
           "Usage: %s [options] <code>\n\n"
           "Options:\n"
-          "-t   Print tokens.\n"
-          "-p   Print AST.\n",
+          "-f <file> Read code from file\n"
+          "-t        Print tokens.\n"
+          "-p        Print AST.\n",
           name);
 }
 
@@ -59,9 +60,13 @@ int main(int argc, char** argv) {
   bool parse = false;
   bool tokenize = false;
   bool execute = true;
+  char* filename = NULL;
 
-  while ((opt = getopt(argc, argv, "tp")) != -1) {
+  while ((opt = getopt(argc, argv, "f:tp")) != -1) {
     switch (opt) {
+      case 'f':
+        filename = optarg;
+        break;
       case 't':
         tokenize = true;
         execute = false;
@@ -77,19 +82,16 @@ int main(int argc, char** argv) {
     }
   }
 
-  char* input_from_file = NULL;
-  input_from_file = read_file(argv[optind]);
-
   char* input = NULL;
 
-  if (input_from_file) {
-    input = input_from_file;
-  } else {
+  if (!filename) {
     input = argv[optind];
     if (!input) {
       print_usage(argv[0]);
       return 1;
     }
+  } else {
+    input = read_file(filename);
   }
 
   remove_outer_quotes(input);

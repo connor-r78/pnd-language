@@ -27,6 +27,7 @@ void parse_and_print(char* input) {
 
   print_sexp(sexp);
   printf("\n");
+}
 
 char* read_file(const char* filename) {
     FILE* f = fopen(filename, "rb");
@@ -48,8 +49,9 @@ void print_usage(char* name) {
   fprintf(stderr,
           "Usage: %s [options] <code>\n\n"
           "Options:\n"
-          "-t   Print tokens.\n"
-          "-p   Print AST.\n",
+          "-f <file> Read code from file\n"
+          "-t        Print tokens.\n"
+          "-p        Print AST.\n",
           name);
 }
 
@@ -58,9 +60,13 @@ int main(int argc, char** argv) {
   bool parse = false;
   bool tokenize = false;
   bool execute = true;
+  char* filename = NULL;
 
-  while ((opt = getopt(argc, argv, "tp")) != -1) {
+  while ((opt = getopt(argc, argv, "f:tp")) != -1) {
     switch (opt) {
+      case 'f':
+        filename = optarg;
+        break;
       case 't':
         tokenize = true;
         execute = false;
@@ -76,29 +82,26 @@ int main(int argc, char** argv) {
     }
   }
 
-  char* input_from_file = NULL;
-  input_from_file = read_file(argv[optind]);
-
   char* input = NULL;
 
-  if (input_from_file) {
-    input = input_from_file;
-  } else {
+  if (!filename) {
     input = argv[optind];
     if (!input) {
       print_usage(argv[0]);
       return 1;
     }
+  } else {
+    input = read_file(filename);
   }
 
   remove_outer_quotes(input);
 
-  token_streamer streamer = token_streamer_init(input);
+  TokenStreamer streamer = token_streamer_init(input);
   if (execute) {
     interpreter_t* interp = init_interpreter();
 
     while (1) {
-      token_t* token = token_streamer_next(&streamer);
+      Token* token = token_streamer_next(&streamer);
       if (token->type == TOKEN_EOF) {
         break;
       }
@@ -119,7 +122,7 @@ int main(int argc, char** argv) {
   }
 
   if (tokenize) {
-    token_streamer streamer = token_streamer_init(input);
+    TokenStreamer streamer = token_streamer_init(input);
 
     Token* token = token_streamer_next(&streamer);
 
@@ -136,7 +139,7 @@ int main(int argc, char** argv) {
     streamer = token_streamer_init(input);
 
     while (1) {
-      token_t* token = token_streamer_next(&streamer);
+      Token* token = token_streamer_next(&streamer);
       if (token->type == TOKEN_EOF) {
         break;
       }

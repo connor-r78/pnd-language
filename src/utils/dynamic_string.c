@@ -1,12 +1,11 @@
 #include "dynamic_string.h"
-#include "../gc/gc.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-String string_new(void) {
-  char* data = gc_alloc(sizeof(char));
+String string_new() {
+  char* data = malloc(sizeof(char));
   size_t len = 0;
   size_t capacity = 1;
 

@@ -1,5 +1,4 @@
 #include "value.h"
-#include "../gc/gc.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -79,7 +78,7 @@ Value sexp_to_value(const SExp* sexp) {
       ValueList** list_tail = &val.as.list;
 
       while (current) {
-        ValueList* new_node = gc_alloc(sizeof(ValueList));
+        ValueList* new_node = malloc(sizeof(ValueList));
         new_node->value = sexp_to_value(current->value);
         new_node->next = NULL;
 

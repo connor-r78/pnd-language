@@ -9,7 +9,6 @@
 #include "interpreter/value.h"
 #include "lexer/lexer.h"
 #include "parser/parse.h"
-#include "gc/gc.h"
 
 void remove_outer_quotes(char* str) {
   size_t len = strlen(str);
@@ -37,7 +36,7 @@ char* read_file(const char* filename) {
     long length = ftell(f);
     fseek(f, 0, SEEK_SET);
 
-    char* buffer = gc_alloc(length + 1);
+    char* buffer = malloc(length + 1);
 
     fread(buffer, 1, length, f);
     buffer[length] = '\0';

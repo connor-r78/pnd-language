@@ -1,4 +1,5 @@
 #include "../lexer/lexer.h"
+#include "../gc/gc.h"
 
 #include <ctype.h>
 #include <stdbool.h>
@@ -94,7 +95,7 @@ bool is_allowed_special_character(char c) {
 }
 
 Token* tokengen(TokenType type, const char* value) {
-  Token* ret = malloc(sizeof(Token));
+  Token* ret = gc_alloc(sizeof(Token));
 
   if (!ret)
     return NULL;

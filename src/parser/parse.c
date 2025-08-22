@@ -1,4 +1,5 @@
 #include "parse.h"
+#include "../gc/gc.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,7 +44,7 @@ void print_sexp(SExp* sexp) {
 }
 
 static SExp* make_list_from_items(SExp** items, size_t count) {
-  SExp* list = malloc(sizeof(SExp));
+  SExp* list = gc_alloc(sizeof(SExp));
   list->type = SEXP_LIST;
   list->as.list = NULL;
   list->length = count;
@@ -56,7 +57,7 @@ static SExp* make_list_from_items(SExp** items, size_t count) {
   SExpList* head = NULL;
   SExpList* tail = NULL;
   for (size_t i = 0; i < count; i++) {
-    SExpList* node = malloc(sizeof(SExpList));
+    SExpList* node = gc_alloc(sizeof(SExpList));
     node->value = items[i];
     node->next = NULL;
     if (!head) {
@@ -72,7 +73,7 @@ static SExp* make_list_from_items(SExp** items, size_t count) {
 }
 
 SExp* parse_list(TokenStreamer* streamer) {
-  SExp* ret = malloc(sizeof(SExp));
+  SExp* ret = gc_alloc(sizeof(SExp));
 
   ret->type = SEXP_LIST;
   ret->as.list = NULL;
@@ -88,12 +89,12 @@ SExp* parse_list(TokenStreamer* streamer) {
 
     if (elem) {
       if (head == NULL) {
-        head = malloc(sizeof(SExpList));
+        head = gc_alloc(sizeof(SExpList));
         head->value = elem;
         head->next = NULL;
         tail = head;
       } else {
-        SExpList* new_node = malloc(sizeof(SExpList));
+        SExpList* new_node = gc_alloc(sizeof(SExpList));
         new_node->value = elem;
         new_node->next = NULL;
         tail->next = new_node;
@@ -112,7 +113,7 @@ SExp* parse_list(TokenStreamer* streamer) {
 }
 
 SExp* parse_sexp(TokenStreamer* streamer, Token* token) {
-  SExp* ret = malloc(sizeof(SExp));
+  SExp* ret = gc_alloc(sizeof(SExp));
 
   if (!ret) {
     return NULL;
@@ -141,7 +142,7 @@ SExp* parse_sexp(TokenStreamer* streamer, Token* token) {
       Token* next = token_streamer_next(streamer);
       SExp* quoted = parse_sexp(streamer, next);
 
-      SExp* sym = malloc(sizeof(SExp));
+      SExp* sym = gc_alloc(sizeof(SExp));
       sym->type = SEXP_SYMBOL;
       sym->as.symbol = strdup("quote");
 

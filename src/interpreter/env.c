@@ -3,6 +3,7 @@
  * lookups) using a hash map
  */
 #include "../interpreter/env.h"
+#include "../gc/gc.h"
 
 #include <stdint.h>
 #include <string.h>
@@ -24,7 +25,7 @@ uint32_t hash(const char* str) {
 }
 
 Env* env_init(size_t capacity) {
-  Env* ret = malloc(sizeof(Env));
+  Env* ret = gc_alloc(sizeof(Env));
   ret->capacity = capacity;
   ret->buckets = calloc(capacity, sizeof(EnvEntry_t*));
   return ret;
@@ -68,8 +69,8 @@ void env_add(Env* env, const char* key, Value value) {
     ent = ent->next;
   }
 
-  EnvEntry_t* new_entry = malloc(sizeof(EnvEntry_t));
-  new_entry->key = malloc(strlen(key) + 1);
+  EnvEntry_t* new_entry = gc_alloc(sizeof(EnvEntry_t));
+  new_entry->key = gc_alloc(strlen(key) + 1);
   strcpy(new_entry->key, key);
   new_entry->value = value;
   new_entry->next = NULL;

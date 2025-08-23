@@ -13,4 +13,4 @@ Value sexp_to_value(const SExp* sexp);
 interpreter_t* init_interpreter();
 void interpreter_free(interpreter_t* interp);
 
-#endif
+#endif  // PND_INTERPRETER_H_

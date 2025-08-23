@@ -71,7 +71,7 @@ static SExp* make_list_from_items(SExp** items, size_t count) {
   return list;
 }
 
-SExp* parse_list(token_streamer* streamer) {
+SExp* parse_list(TokenStreamer* streamer) {
   SExp* ret = malloc(sizeof(SExp));
 
   ret->type = SEXP_LIST;
@@ -138,7 +138,7 @@ SExp* parse_sexp(TokenStreamer* streamer, Token* token) {
 
       return ret;
     case TOKEN_QUOTE: {
-      token_t* next = token_streamer_next(streamer);
+      Token* next = token_streamer_next(streamer);
       SExp* quoted = parse_sexp(streamer, next);
 
       SExp* sym = malloc(sizeof(SExp));

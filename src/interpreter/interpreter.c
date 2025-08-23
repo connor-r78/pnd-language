@@ -9,8 +9,9 @@
 #include "./builtins.h"
 #include "./env.h"
 #include "./value.h"
+#include "../gc/gc.h"
 
-interpreter_t* init_interpreter() {
+interpreter_t* init_interpreter(void) {
   interpreter_t* ret = malloc(sizeof(interpreter_t));
   ret->env = env_init(1000);
   init_builtins(ret->env);
@@ -19,7 +20,7 @@ interpreter_t* init_interpreter() {
 
 void interpreter_free(interpreter_t* interp) {
   env_free(interp->env);
-  free(interp);
+  //free(interp);
 }
 
 // Forward declaration
@@ -40,6 +41,7 @@ Value builtin_set(size_t argc, Value* argv, interpreter_t* interp) {
   return evaluated;
 }
 Value eval_value(interpreter_t* interp, Value value) {
+  //gc_collect();
   switch (value.type) {
     case VALUE_NIL:
     case VALUE_NUMBER:
@@ -127,7 +129,7 @@ Value eval_value(interpreter_t* interp, Value value) {
 
           Value result = builtin_set(argc, argv, interp);
 
-          free(argv);
+          //free(argv);
 
           return result;
         }
@@ -152,7 +154,7 @@ Value eval_value(interpreter_t* interp, Value value) {
       if (op.type == VALUE_CFUNC) {
         result = op.as.cfunc(argc, argv);
         if (argv)
-          free(argv);
+          //free(argv);
         return result;
       }
 
@@ -179,12 +181,12 @@ Value eval_value(interpreter_t* interp, Value value) {
         }
 
         if (argv)
-          free(argv);
+          //free(argv);
         return res;
       }
 
       if (argv)
-        free(argv);
+        //free(argv);
       return nil;
     }
   }

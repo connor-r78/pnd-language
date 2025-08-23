@@ -1,0 +1,4 @@
+(set myfunc (lambda '(x y) '(add 2 x y)))
+(println (myfunc 4 6))
+(set foo 4)
+(set bar 8)

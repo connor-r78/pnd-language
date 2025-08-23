@@ -110,28 +110,6 @@ void gc_collect(void) {
 }
 
 void* gc_alloc(size_t size) {
-  if (!gc_stack_bottom) {
-    volatile int bottom_probe = 0;
-    gc_init((void*)&bottom_probe);
-  }
-  if (gc_bytes_allocated + size > gc_threshold) {
-    gc_collect();
-  }
-  GCObject* o = (GCObject*)malloc(sizeof(GCObject) + size);
-  if (!o) {
-    gc_collect();
-    o = (GCObject*)malloc(sizeof(GCObject) + size);
-    if (!o) {
-      fprintf(stderr, "fatal: out of memory allocating %zu bytes\n", size);
-      exit(1);
-    }
-  }
-  o->size = size;
-  o->marked = 0;
-  o->next = gc_head;
-  gc_head = o;
-  gc_bytes_allocated += sizeof(GCObject) + size;
-  void* payload = payload_of(o);
-  memset(payload, 0, size);
-  return payload;
+  int* ptr = malloc(size);
+  return ptr;
 }

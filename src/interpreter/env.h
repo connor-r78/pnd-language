@@ -1,6 +1,6 @@
-#ifndef PND_INTPRETER_ENV_H_
 #ifndef PND_INTERPRETER_ENV_H_
 #define PND_INTERPRETER_ENV_H_
+
 #include <stdlib.h>
 
 #include "value.h"
@@ -22,4 +22,4 @@ void env_free(Env* env);
 void env_add(Env* env, const char* key, Value value);
 Value env_lookup(Env* env, const char* key);
 
-#endif
+#endif  // PND_INTERPRETER_ENV_H_

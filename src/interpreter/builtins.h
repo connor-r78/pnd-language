@@ -10,4 +10,4 @@ Value builtin_add(size_t argc, Value* argv);
 
 void init_builtins(Env* env);
 
-#endif
+#endif  // PND_INTERPRETER_BUILTINS_H

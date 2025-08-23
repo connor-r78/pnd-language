@@ -50,4 +50,4 @@ Value sexp_to_value(const SExp* sexp);
 // leaks memory until garbage collector
 void value_free(Value* val);
 
-#endif  // PND_VALUE_H
+#endif  // PND_INTERPRETER_VALUE_H_

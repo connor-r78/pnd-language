@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -97,7 +98,8 @@ int main(int argc, char** argv) {
   } else {
     input = read_file(filename);
     if (!input) {
-      fprintf(stderr, "file `%s` does not exist\n", filename);
+      fprintf(stderr, "error occured while opening `%s`: %s\n", filename,
+              strerror(errno));
       return 1;
     }
   }

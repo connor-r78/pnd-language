@@ -28,6 +28,6 @@ make
 5. Compiled binary will be at `build/pnd`
 
 ## 👮 Repository
-Project is licensed under the MIT Licesne. <br/>
+Project is licensed under the MIT License. <br/>
 See more in [LICENSE] file. <br/>
 You can check contribution guide in [CONTRIBUTING.md]

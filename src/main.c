@@ -30,19 +30,22 @@ void parse_and_print(char* input) {
 }
 
 char* read_file(const char* filename) {
-    FILE* f = fopen(filename, "rb");
+  FILE* file = fopen(filename, "rb");
 
-    fseek(f, 0, SEEK_END);
-    long length = ftell(f);
-    fseek(f, 0, SEEK_SET);
+  if (!file)
+    return NULL;
 
-    char* buffer = malloc(length + 1);
+  fseek(file, 0, SEEK_END);
+  long length = ftell(file);
+  fseek(file, 0, SEEK_SET);
 
-    fread(buffer, 1, length, f);
-    buffer[length] = '\0';
-    fclose(f);
+  char* buffer = malloc(length + 1);
 
-    return buffer;
+  fread(buffer, 1, length, file);
+  buffer[length] = '\0';
+  fclose(file);
+
+  return buffer;
 }
 
 void print_usage(char* name) {
@@ -57,10 +60,13 @@ void print_usage(char* name) {
 
 int main(int argc, char** argv) {
   int opt;
+
   bool parse = false;
   bool tokenize = false;
   bool execute = true;
+
   char* filename = NULL;
+  char* input = NULL;
 
   while ((opt = getopt(argc, argv, "f:tp")) != -1) {
     switch (opt) {
@@ -82,8 +88,6 @@ int main(int argc, char** argv) {
     }
   }
 
-  char* input = NULL;
-
   if (!filename) {
     input = argv[optind];
     if (!input) {
@@ -92,6 +96,10 @@ int main(int argc, char** argv) {
     }
   } else {
     input = read_file(filename);
+    if (!input) {
+      fprintf(stderr, "file `%s` does not exist\n", filename);
+      return 1;
+    }
   }
 
   remove_outer_quotes(input);

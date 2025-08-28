@@ -1,18 +1,3 @@
-/*
-
-Using the functions in this header file:
-
-Defining the bottom of the stack:
-
-int stack_bottom;
-gc_init(&stack_bottom);
-
-Triggering garbage collection:
-
-gc_collect();
-
-*/
-
 #ifndef PND_GC_H_
 #define PND_GC_H_
 
@@ -22,13 +7,9 @@ gc_collect();
 extern "C" {
 #endif
 
-void gc_init(void* stack_bottom_hint);
-
-void gc_register_root(void** ptr_location);
+void gc_free(void** ptr);
 
 void* gc_alloc(size_t size);
-
-void gc_collect(void);
 
 #define GC_NEW(T) ((T*)gc_alloc(sizeof(T)))
 

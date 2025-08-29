@@ -3,6 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+struct GCObject {
+  void* memAdd;
+  int color;
+};
+
 void gc_free(void** ptr) {
   free(*ptr);
   *ptr = NULL;

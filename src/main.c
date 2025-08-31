@@ -9,7 +9,6 @@
 #include "interpreter/value.h"
 #include "lexer/lexer.h"
 #include "parser/parse.h"
-#include "gc/gc.h"
 
 void remove_outer_quotes(char* str) {
   size_t len = strlen(str);
@@ -57,12 +56,6 @@ void print_usage(char* name) {
 }
 
 int main(int argc, char** argv) {
-  int* ptr;
-  ptr = gc_alloc(sizeof(*ptr));
-  printf("%zu\n", sizeof(*ptr));
-
-
-  /*
   int opt;
   bool parse = false;
   bool tokenize = false;
@@ -159,7 +152,6 @@ int main(int argc, char** argv) {
     }
     token_streamer_free(&streamer);
   }
-  */
 
   return 0;
 }
